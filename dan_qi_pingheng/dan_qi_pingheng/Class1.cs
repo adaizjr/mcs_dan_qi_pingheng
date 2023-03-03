@@ -74,4 +74,17 @@ namespace dan_qi_pingheng
             return level + 1 >= dragSlot.Item.GetImgQuality();
         }
     }
+
+    [HarmonyPatch(typeof(Avatar), "AddZiZhiSpeed", new Type[] { typeof(float) })]
+    class ZizhiPatch
+    {
+        public static bool Prefix(Avatar __instance, ref float __result, ref float speed)
+        {
+            if (__instance.ZiZhi > 85)
+                __result = Math.Max(2, (__instance.ZiZhi - 85) * .01f + .85f) * speed;
+            else
+                __result = Math.Max(-.4f, (__instance.ZiZhi - 15) / 56f - .4f) * speed;
+            return false;
+        }
+    }
 }
