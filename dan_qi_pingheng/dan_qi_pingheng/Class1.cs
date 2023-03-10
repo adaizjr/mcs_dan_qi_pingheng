@@ -41,6 +41,102 @@ namespace dan_qi_pingheng
             }
         }
     }
+    [HarmonyPatch(typeof(GUIPackage.item), "GetJiaoYiPrice", new Type[] { typeof(int), typeof(bool), typeof(bool) })]
+    class GUIItemJiaoyiPatch
+    {
+        public static void Postfix(GUIPackage.item __instance, ref int __result, ref int npcid, ref bool isPlayer, ref bool zongjia)
+        {
+            if (npcid > 0 && !zongjia)
+            {
+                int num = jsonData.instance.GetMonstarInterestingItem(npcid, __instance.itemID, __instance.Seid);
+                float tmp_baseprice = __instance.itemPrice;
+                if (__instance.Seid != null && __instance.Seid.HasField("Money"))
+                {
+                    tmp_baseprice = __instance.Seid["Money"].I;
+                }
+                if (__instance.Seid != null && __instance.Seid.HasField("NaiJiu"))
+                {
+                    tmp_baseprice = tmp_baseprice * GUIPackage.ItemCellEX.getItemNaiJiuPrice(__instance);
+                }
+                if (isPlayer)
+                {
+                    if (num < 80 && num >= 0)
+                    {
+                        float jiaCheng = __result / (tmp_baseprice * .5f);
+                        float newjiaCheng = jiaCheng - num * .01f + .8f;
+                        if (jsonData.instance.ItemJsonData[string.Concat(__instance.itemID)]["seid"].ToList().Contains(7) && num <= 80)
+                            newjiaCheng += .2f;
+                        __result = (int)(tmp_baseprice * .5f * newjiaCheng);
+                    }
+                }
+                //else if (num == 100)
+                //{
+                //    float jiaCheng = __result / tmp_baseprice;
+                //    float newjiaCheng = jiaCheng - num * .01f;
+                //    __result = (int)(tmp_baseprice * newjiaCheng);
+                //}
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(Bag.BaseItem), "GetJiaoYiPrice", new Type[] { typeof(int), typeof(bool), typeof(bool) })]
+    class BaseItemJiaoyiPatch
+    {
+        public static void Postfix(Bag.BaseItem __instance, ref int __result, ref int npcid, ref bool isPlayer, ref bool zongjia)
+        {
+            if (npcid > 0 && !zongjia)
+            {
+                int num = jsonData.instance.GetMonstarInterestingItem(npcid, __instance.Id, __instance.Seid);
+                float tmp_baseprice = __instance.BasePrice;
+                if (__instance.Seid != null && __instance.Seid.HasField("Money"))
+                {
+                    tmp_baseprice = __instance.Seid["Money"].I;
+                }
+                if (__instance.Seid != null && __instance.Seid.HasField("NaiJiu"))
+                {
+                    tmp_baseprice = tmp_baseprice * get_naijiu_xishu(__instance);
+                }
+
+                if (isPlayer)
+                {
+                    if (num < 80 && num >= 0)
+                    {
+                        float jiaCheng = __result / (tmp_baseprice * .5f);
+                        float newjiaCheng = jiaCheng - num * .01f + .8f;
+                        if (jsonData.instance.ItemJsonData[string.Concat(__instance.Id)]["seid"].ToList().Contains(7) && num <= 80)
+                            newjiaCheng += .2f;
+                        __result = (int)(tmp_baseprice * .5f * newjiaCheng);
+                    }
+                }
+                //else if (num == 100)
+                //{
+                //    float jiaCheng = __result / tmp_baseprice;
+                //    float newjiaCheng = jiaCheng - num * .01f;
+                //    __result = (int)(tmp_baseprice * newjiaCheng);
+                //}
+            }
+        }
+        static float get_naijiu_xishu(Bag.BaseItem __instance)
+        {
+            _ItemJsonData itemJsonData = _ItemJsonData.DataDict[__instance.Id];
+            float result;
+            if (itemJsonData.type == 14 || itemJsonData.type == 9)
+            {
+                float num = 100f;
+                if (itemJsonData.type == 14)
+                {
+                    num = (float)jsonData.instance.LingZhouPinJie[itemJsonData.quality.ToString()]["Naijiu"];
+                }
+                result = __instance.Seid["NaiJiu"].n / num;
+            }
+            else
+            {
+                result = 1f;
+            }
+            return result;
+        }
+    }
+
     [HarmonyPatch(typeof(LianDanPanel), "PutDanLu", new Type[] { typeof(DanLuSlot) })]
     class DanLuPatch
     {
