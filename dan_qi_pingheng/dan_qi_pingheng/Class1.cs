@@ -9,10 +9,10 @@ using System;
 using System.Reflection;
 using UnityEngine;
 
-namespace dan_qi_pingheng
+namespace zjr_mcs
 {
-    [BepInPlugin("plugins.zjr.mcsmod", "这是我的第一个BepIn插件", "1.0.0.0")]
-    public class MyFirstBepInExMod : BaseUnityPlugin
+    [BepInPlugin("plugins.zjr.mcs_pingheng", "zjr平衡插件", "1.0.0.0")]
+    public class pinghengBepInExMod : BaseUnityPlugin
     {// 在插件启动时会直接调用Awake()方法
         void Awake()
         {
@@ -69,12 +69,6 @@ namespace dan_qi_pingheng
                         __result = (int)(tmp_baseprice * .5f * newjiaCheng);
                     }
                 }
-                //else if (num == 100)
-                //{
-                //    float jiaCheng = __result / tmp_baseprice;
-                //    float newjiaCheng = jiaCheng - num * .01f;
-                //    __result = (int)(tmp_baseprice * newjiaCheng);
-                //}
             }
         }
     }
@@ -108,12 +102,6 @@ namespace dan_qi_pingheng
                         __result = (int)(tmp_baseprice * .5f * newjiaCheng);
                     }
                 }
-                //else if (num == 100)
-                //{
-                //    float jiaCheng = __result / tmp_baseprice;
-                //    float newjiaCheng = jiaCheng - num * .01f;
-                //    __result = (int)(tmp_baseprice * newjiaCheng);
-                //}
             }
         }
         static float get_naijiu_xishu(Bag.BaseItem __instance)
@@ -183,4 +171,17 @@ namespace dan_qi_pingheng
             return false;
         }
     }
+
+    [HarmonyPatch(typeof(jsonData), "Preload")]
+    class RandomPatch
+    {
+        public static void Postfix(jsonData __instance)
+        {
+            if (__instance.RandomList.Count < 9500)
+                for (int i = 0; i < 9500; i++)
+                {
+                    __instance.RandomList.Add(jsonData.GetRandom());
+                }
+        }
+    }    
 }
