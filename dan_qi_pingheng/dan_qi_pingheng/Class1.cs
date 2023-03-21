@@ -6,6 +6,7 @@ using KBEngine;
 using LianQi;
 using script.NewLianDan.LianDan;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
@@ -37,6 +38,8 @@ namespace zjr_mcs
                 if (__instance.quality > level + 1)
                 {
                     avatar.AddDandu((__instance.quality - level - 1) * 30);
+
+                    UIPopTip.Inst.Pop("超阶吃药，毒性大增", PopTipIconType.感悟);
                 }
             }
         }
@@ -60,12 +63,12 @@ namespace zjr_mcs
                 }
                 if (isPlayer)
                 {
-                    if (num < 80 && num >= 0)
+                    if (num < 100 && num >= 0)
                     {
                         float jiaCheng = __result / (tmp_baseprice * .5f);
-                        float newjiaCheng = jiaCheng - num * .01f + .8f;
-                        if (jsonData.instance.ItemJsonData[string.Concat(__instance.itemID)]["seid"].ToList().Contains(7) && num <= 80)
-                            newjiaCheng += .2f;
+                        float newjiaCheng = jiaCheng - num * .01f + 1;
+                        //if (jsonData.instance.ItemJsonData[string.Concat(__instance.itemID)]["seid"].ToList().Contains(7) && num <= 80)
+                        //    newjiaCheng += .2f;
                         __result = (int)(tmp_baseprice * .5f * newjiaCheng);
                     }
                 }
@@ -93,12 +96,12 @@ namespace zjr_mcs
 
                 if (isPlayer)
                 {
-                    if (num < 80 && num >= 0)
+                    if (num < 100 && num >= 0)
                     {
                         float jiaCheng = __result / (tmp_baseprice * .5f);
-                        float newjiaCheng = jiaCheng - num * .01f + .8f;
-                        if (jsonData.instance.ItemJsonData[string.Concat(__instance.Id)]["seid"].ToList().Contains(7) && num <= 80)
-                            newjiaCheng += .2f;
+                        float newjiaCheng = jiaCheng - num * .01f + 1;
+                        //if (jsonData.instance.ItemJsonData[string.Concat(__instance.Id)]["seid"].ToList().Contains(7) && num <= 80)
+                        //    newjiaCheng += .2f;
                         __result = (int)(tmp_baseprice * .5f * newjiaCheng);
                     }
                 }
@@ -133,6 +136,10 @@ namespace zjr_mcs
             KBEngine.Avatar player = PlayerEx.Player;
             int level = (int)player.level;
             level = (level + 5) / 3;
+            if (level + 1 < dragSlot.Item.GetImgQuality())
+            {
+                UIPopTip.Inst.Pop("超阶物品，无法使用", PopTipIconType.感悟);
+            }
             return level + 1 >= dragSlot.Item.GetImgQuality();
         }
     }
@@ -144,6 +151,10 @@ namespace zjr_mcs
             KBEngine.Avatar player = PlayerEx.Player;
             int level = (int)player.level;
             level = (level + 5) / 3;
+            if (level + 1 < dragSlot.Item.GetImgQuality())
+            {
+                UIPopTip.Inst.Pop("超阶物品，无法使用", PopTipIconType.感悟);
+            }
             return level + 1 >= dragSlot.Item.GetImgQuality();
         }
     }
@@ -155,6 +166,10 @@ namespace zjr_mcs
             KBEngine.Avatar player = PlayerEx.Player;
             int level = (int)player.level;
             level = (level + 5) / 3;
+            if (level + 1 < dragSlot.Item.GetImgQuality())
+            {
+                UIPopTip.Inst.Pop("超阶物品，无法使用", PopTipIconType.感悟);
+            }
             return level + 1 >= dragSlot.Item.GetImgQuality();
         }
     }
@@ -183,5 +198,126 @@ namespace zjr_mcs
                     __instance.RandomList.Add(jsonData.GetRandom());
                 }
         }
-    }    
+    }
+
+    [HarmonyPatch(typeof(Tab.TabWuPingPanel), "AddEquip", new Type[] { typeof(int), typeof(EquipItem) })]
+    class EquipPatch
+    {
+        public static bool Prefix(Tab.TabWuPingPanel __instance, ref int index, ref EquipItem equipItem)
+        {
+            KBEngine.Avatar player = PlayerEx.Player;
+            int level = (int)player.level;
+            level = (level + 5) / 3;
+            if (level + 1 < equipItem.GetImgQuality())
+            {
+                UIPopTip.Inst.Pop("超阶物品，无法使用", PopTipIconType.感悟);
+            }
+            return level + 1 >= equipItem.GetImgQuality();
+        }
+    }
+
+    [HarmonyPatch(typeof(NPCFactory), "AuToCreateNpcs")]
+    class gengduonpcPatch
+    {
+        static Dictionary<int, List<string>> NpcAuToCreateDictionary = new Dictionary<int, List<string>>();
+        public static void Postfix(NPCFactory __instance)
+        {
+            JSONObject npcCreateData = jsonData.instance.NpcCreateData;
+            if (NpcAuToCreateDictionary.Count < 1)
+            {
+                JSONObject npcleiXingDate = jsonData.instance.NPCLeiXingDate;
+                foreach (string text in npcleiXingDate.keys)
+                {
+                    if (npcleiXingDate[text]["Level"].I == 1 && npcleiXingDate[text]["LiuPai"].I != 34)
+                    {
+                        int i = npcleiXingDate[text]["Type"].I;
+                        if (NpcAuToCreateDictionary.ContainsKey(i))
+                        {
+                            NpcAuToCreateDictionary[i].Add(text);
+                        }
+                        else
+                        {
+                            NpcAuToCreateDictionary.Add(i, new List<string>
+                        {
+                            text
+                        });
+                        }
+                    }
+                }
+            }
+            foreach (JSONObject jsonobject in npcCreateData.list)
+            {
+                int j = jsonobject["NumA"].I;
+                if (jsonobject["EventValue"].Count > 0 && GlobalValue.Get(jsonobject["EventValue"][0].I, "NPCFactory.AuToCreateNpcs 每10年自动生成NPC") == jsonobject["EventValue"][1].I)
+                {
+                    j = jsonobject["NumB"].I;
+                }
+                int i2 = jsonobject["id"].I;
+                while (j > 0)
+                {
+                    string index = NpcAuToCreateDictionary[i2][__instance.getRandom(0, NpcAuToCreateDictionary[i2].Count - 1)];
+                    JSONObject npcDate = new JSONObject(jsonData.instance.NPCLeiXingDate[index].ToString(), -2, false, false);
+                    __instance.AfterCreateNpc(npcDate, false, 0, false, null, 0);
+                    j--;
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(UIBiGuanXiuLianPanel), "CalcShuangXiu", new Type[] { typeof(int) })]
+    class shuangxiuPatch
+    {
+        public static bool Prefix(UIBiGuanXiuLianPanel __instance, ref int biGuanTime)
+        {
+            KBEngine.Avatar player = PlayerEx.Player;
+            if (player.ShuangXiuData.HasField("JingYuan"))
+            {
+                JSONObject jsonobject = player.ShuangXiuData["JingYuan"];
+                int num = jsonobject["Count"].I;
+                ShuangXiuMiShu shuangXiuMiShu = ShuangXiuMiShu.DataDict[jsonobject["Skill"].I];
+                int i = jsonobject["PinJie"].I;
+                int npcid = 0;
+                bool flag = false;
+                if (jsonobject.HasField("DaoLvID"))
+                {
+                    npcid = jsonobject["DaoLvID"].I;
+                    flag = !NPCEx.IsDeath(npcid);
+                }
+                int tmp_max_jing = player.ShuangXiuData["JingYuan"].I;
+                int i2 = (int)(jsonobject["Reward"].I * Mathf.Min(UIBiGuanXiuLianPanel.GetBiguanSpeed(), ShuangXiuLianHuaSuDu.DataDict[i].speed) / tmp_max_jing * biGuanTime);
+                if (i2 > 0)
+                {
+                    if (shuangXiuMiShu.ningliantype == 1)
+                    {
+                        player.addEXP(i2);
+                        if (flag)
+                        {
+                            NPCEx.AddJsonInt(npcid, "exp", i2);
+                        }
+                    }
+                    else if (shuangXiuMiShu.ningliantype == 2)
+                    {
+                        player.xinjin += i2;
+                    }
+                    else if (shuangXiuMiShu.ningliantype == 3)
+                    {
+                        player.addShenShi(i2);
+                        if (flag)
+                        {
+                            NPCEx.AddJsonInt(npcid, "shengShi", i2);
+                        }
+                    }
+                    else if (shuangXiuMiShu.ningliantype == 4)
+                    {
+                        player._HP_Max += i2;
+                        if (flag)
+                        {
+                            NPCEx.AddJsonInt(npcid, "HP", i2);
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+    }
 }
