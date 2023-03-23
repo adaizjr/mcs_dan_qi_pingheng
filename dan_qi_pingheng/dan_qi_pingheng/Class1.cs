@@ -320,4 +320,26 @@ namespace zjr_mcs
             return false;
         }
     }
+
+
+    [HarmonyPatch(typeof(NpcJieSuanManager), "GetJieShaNpcList", new Type[] { typeof(int) })]
+    class jieshaPatch
+    {
+        public static bool Prefix(NpcJieSuanManager __instance, ref List<int> __result, ref int index)
+        {
+            List<int> list = new List<int>();
+            if (__instance.npcMap.bigMapNPCDictionary.ContainsKey(index) && __instance.npcMap.bigMapNPCDictionary[index].Count > 0)
+            {
+                foreach (int num in __instance.npcMap.bigMapNPCDictionary[index])
+                {
+                    if (__instance.GetNpcBigLevel(num) <= Tools.instance.getPlayer().getLevelType() + 1 && __instance.GetNpcBigLevel(num) >= Tools.instance.getPlayer().getLevelType() && jsonData.instance.AvatarRandomJsonData[num.ToString()]["HaoGanDu"].I < 50 && __instance.GetNpcData(num)["ActionId"].I == 34)
+                    {
+                        list.Add(num);
+                    }
+                }
+            }
+            __result = list;
+            return false;
+        }
+    }
 }
