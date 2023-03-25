@@ -342,4 +342,94 @@ namespace zjr_mcs
             return false;
         }
     }
+
+    [HarmonyPatch(typeof(NpcJieSuanManager), "GuDingAddExp", new Type[] { typeof(int), typeof(float) })]
+    class npcxiulianPatch
+    {
+        public static bool Prefix(NpcJieSuanManager __instance, ref int npcId, ref float times)
+        {
+            JSONObject npcData = __instance.GetNpcData(npcId);
+            npcData.SetField("isTanChaUnlock", true);
+            int num = get_xiulian_sudu(npcId);
+            int zizhi = npcData["ziZhi"].I;
+            float tmp_zizhi = get_zizhi_xishu(zizhi);
+            num = (int)(num * (1 + tmp_zizhi));
+            if (npcData.HasField("JinDanData"))
+            {
+                float num2 = npcData["JinDanData"]["JinDanAddSpeed"].f / 100f;
+                num += (int)(num2 * (float)num);
+            }
+            __instance.npcSetField.AddNpcExp(npcId, (int)((float)num * times));
+            return false;
+        }
+        public static int get_xiulian_sudu(int npcId)
+        {
+            JSONObject npcData = NpcJieSuanManager.inst.GetNpcData(npcId);
+            int npcBigLevel = NpcJieSuanManager.inst.GetNpcBigLevel(npcId);
+            int num = 432 * 2;
+            switch (npcBigLevel)
+            {
+                case 2:
+                    num = 432 * 3;
+                    break;
+                case 3:
+                    num = 1080 * 3;
+                    break;
+                case 4:
+                    num = 1080 * 4;
+                    break;
+            }
+            if (npcBigLevel >= 5)
+                num = 1296 * 5;
+            if (npcBigLevel <= 1 && npcData["MenPai"].I == 5)
+            {
+                foreach (var tmp in npcData["staticSkills"].list)
+                {
+                    if (num < jsonData.instance.StaticSkillJsonData[tmp.I.ToString()]["Skill_Speed"].I)
+                    {
+                        num = jsonData.instance.StaticSkillJsonData[tmp.I.ToString()]["Skill_Speed"].I;
+                    }
+                }
+            }
+            return num;
+        }
+        public static float get_zizhi_xishu(int zizhi)
+        {
+            float tmp_zizhi = -.4f;
+            {
+                if (zizhi > 85)
+                    tmp_zizhi = Math.Max(2, (zizhi - 85) * .01f + .85f);
+                else
+                    tmp_zizhi = Math.Max(-.4f, (zizhi - 15) / 56f - .4f);
+            }
+            return tmp_zizhi;
+        }
+    }
+    [HarmonyPatch(typeof(NPCXiuLian), "NpcBiGuan", new Type[] { typeof(int) })]
+    class npcbiguanxiulianPatch
+    {
+        public static bool Prefix(NPCXiuLian __instance, ref int npcId)
+        {
+            NpcJieSuanManager.inst.npcUseItem.autoUseItem(npcId);
+            JSONObject jsonobject = jsonData.instance.AvatarJsonData[npcId.ToString()];
+            int dongfu = 100;
+            if (PlayerEx.IsDaoLv(npcId))
+            {
+                dongfu = 210;
+                NpcJieSuanManager.inst.npcMap.AddNpcToThreeScene(npcId, 101);
+            }
+            JSONObject npcData = NpcJieSuanManager.inst.GetNpcData(npcId);
+            int num = npcxiulianPatch.get_xiulian_sudu(npcId);
+            int zizhi = npcData["ziZhi"].I;
+            float tmp_zizhi = npcxiulianPatch.get_zizhi_xishu(zizhi);
+            num = (int)(num * (tmp_zizhi + dongfu * 1.2f / 100));
+            if (npcData.HasField("JinDanData"))
+            {
+                float num2 = npcData["JinDanData"]["JinDanAddSpeed"].f / 100f;
+                num += (int)(num2 * (float)num);
+            }
+            NpcJieSuanManager.inst.npcSetField.AddNpcExp(npcId, num);
+            return false;
+        }
+    }
 }
