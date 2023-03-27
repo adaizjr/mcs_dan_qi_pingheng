@@ -275,7 +275,6 @@ namespace zjr_mcs
             if (player.ShuangXiuData.HasField("JingYuan"))
             {
                 JSONObject jsonobject = player.ShuangXiuData["JingYuan"];
-                int num = jsonobject["Count"].I;
                 ShuangXiuMiShu shuangXiuMiShu = ShuangXiuMiShu.DataDict[jsonobject["Skill"].I];
                 int i = jsonobject["PinJie"].I;
                 int npcid = 0;
@@ -285,8 +284,8 @@ namespace zjr_mcs
                     npcid = jsonobject["DaoLvID"].I;
                     flag = !NPCEx.IsDeath(npcid);
                 }
-                int tmp_max_jing = player.ShuangXiuData["JingYuan"].I;
-                int i2 = (int)(jsonobject["Reward"].I * Mathf.Min(UIBiGuanXiuLianPanel.GetBiguanSpeed(), ShuangXiuLianHuaSuDu.DataDict[i].speed) / tmp_max_jing * biGuanTime);
+                int jiazhi = ShuangXiuJingYuanJiaZhi.DataDict[shuangXiuMiShu.ningliantype].jiazhi;
+                int i2 = ShuangXiuLianHuaSuDu.DataDict[i].speed * biGuanTime / jiazhi;
                 if (i2 > 0)
                 {
                     if (shuangXiuMiShu.ningliantype == 1)
