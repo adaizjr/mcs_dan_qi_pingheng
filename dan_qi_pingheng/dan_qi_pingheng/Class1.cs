@@ -18,7 +18,7 @@ namespace zjr_mcs
         void Awake()
         {
             // 使用Debug.Log()方法来将文本输出到控制台
-            Debug.Log("Hello, world!");
+            Debug.Log("Hello,mcs_pingheng!");
             Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
         }
     }
@@ -44,6 +44,7 @@ namespace zjr_mcs
             }
         }
     }
+
     [HarmonyPatch(typeof(GUIPackage.item), "GetJiaoYiPrice", new Type[] { typeof(int), typeof(bool), typeof(bool) })]
     class GUIItemJiaoyiPatch
     {
@@ -67,8 +68,6 @@ namespace zjr_mcs
                     {
                         float jiaCheng = __result / (tmp_baseprice * .5f);
                         float newjiaCheng = jiaCheng - num * .01f + 1;
-                        //if (jsonData.instance.ItemJsonData[string.Concat(__instance.itemID)]["seid"].ToList().Contains(7) && num <= 80)
-                        //    newjiaCheng += .2f;
                         __result = (int)(tmp_baseprice * .5f * newjiaCheng);
                     }
                 }
@@ -100,8 +99,6 @@ namespace zjr_mcs
                     {
                         float jiaCheng = __result / (tmp_baseprice * .5f);
                         float newjiaCheng = jiaCheng - num * .01f + 1;
-                        //if (jsonData.instance.ItemJsonData[string.Concat(__instance.Id)]["seid"].ToList().Contains(7) && num <= 80)
-                        //    newjiaCheng += .2f;
                         __result = (int)(tmp_baseprice * .5f * newjiaCheng);
                     }
                 }
@@ -143,6 +140,7 @@ namespace zjr_mcs
             return level + 1 >= dragSlot.Item.GetImgQuality();
         }
     }
+
     [HarmonyPatch(typeof(LianDanPanel), "PutCaoYao", new Type[] { typeof(LianDanSlot) })]
     class CaoyaoPatch
     {
@@ -158,6 +156,7 @@ namespace zjr_mcs
             return level + 1 >= dragSlot.Item.GetImgQuality();
         }
     }
+
     [HarmonyPatch(typeof(LianQiTotalManager), "PutItem", new Type[] { typeof(LianQiSlot) })]
     class DuanzaoPatch
     {
@@ -187,19 +186,6 @@ namespace zjr_mcs
         }
     }
 
-    [HarmonyPatch(typeof(jsonData), "Preload")]
-    class RandomPatch
-    {
-        public static void Postfix(jsonData __instance)
-        {
-            if (__instance.RandomList.Count < 9500)
-                for (int i = 0; i < 9500; i++)
-                {
-                    __instance.RandomList.Add(jsonData.GetRandom());
-                }
-        }
-    }
-
     [HarmonyPatch(typeof(Tab.TabWuPingPanel), "AddEquip", new Type[] { typeof(int), typeof(EquipItem) })]
     class EquipPatch
     {
@@ -213,56 +199,6 @@ namespace zjr_mcs
                 UIPopTip.Inst.Pop("超阶物品，无法使用", PopTipIconType.感悟);
             }
             return level + 1 >= equipItem.GetImgQuality();
-        }
-    }
-
-    [HarmonyPatch(typeof(NPCFactory), "AuToCreateNpcs")]
-    class gengduonpcPatch
-    {
-        static Dictionary<int, List<string>> NpcAuToCreateDictionary = new Dictionary<int, List<string>>();
-        public static void Postfix(NPCFactory __instance)
-        {
-            JSONObject npcCreateData = jsonData.instance.NpcCreateData;
-            if (NpcAuToCreateDictionary.Count < 1)
-            {
-                JSONObject npcleiXingDate = jsonData.instance.NPCLeiXingDate;
-                foreach (string text in npcleiXingDate.keys)
-                {
-                    if (npcleiXingDate[text]["Level"].I == 1 && npcleiXingDate[text]["LiuPai"].I != 34)
-                    {
-                        int i = npcleiXingDate[text]["Type"].I;
-                        if (NpcAuToCreateDictionary.ContainsKey(i))
-                        {
-                            NpcAuToCreateDictionary[i].Add(text);
-                        }
-                        else
-                        {
-                            NpcAuToCreateDictionary.Add(i, new List<string>
-                        {
-                            text
-                        });
-                        }
-                    }
-                }
-            }
-            foreach (JSONObject jsonobject in npcCreateData.list)
-            {
-                int j = jsonobject["NumA"].I;
-                if (jsonobject["EventValue"].Count > 0 && GlobalValue.Get(jsonobject["EventValue"][0].I, "NPCFactory.AuToCreateNpcs 每10年自动生成NPC") == jsonobject["EventValue"][1].I)
-                {
-                    j = jsonobject["NumB"].I;
-                }
-                int i2 = jsonobject["id"].I;
-                while (j > 0)
-                {
-                    string index = NpcAuToCreateDictionary[i2][__instance.getRandom(0, NpcAuToCreateDictionary[i2].Count - 1)];
-                    JSONObject npcDate = new JSONObject(jsonData.instance.NPCLeiXingDate[index].ToString(), -2, false, false);
-                    __instance.AfterCreateNpc(npcDate, false, 0, false, null, 0);
-                    j--;
-                }
-            }
-            Avatar player = Tools.instance.getPlayer();
-            player.emailDateMag.AddNewEmail("3", new EmailData(3, 1, true, true, player.worldTimeMag.nowTime));
         }
     }
 
@@ -322,7 +258,6 @@ namespace zjr_mcs
         }
     }
 
-
     [HarmonyPatch(typeof(NpcJieSuanManager), "GetJieShaNpcList", new Type[] { typeof(int) })]
     class jieshaPatch
     {
@@ -333,7 +268,12 @@ namespace zjr_mcs
             {
                 foreach (int num in __instance.npcMap.bigMapNPCDictionary[index])
                 {
-                    if (__instance.GetNpcBigLevel(num) <= Tools.instance.getPlayer().getLevelType() + 1 && __instance.GetNpcBigLevel(num) >= Tools.instance.getPlayer().getLevelType() && jsonData.instance.AvatarRandomJsonData[num.ToString()]["HaoGanDu"].I < 50 && __instance.GetNpcData(num)["ActionId"].I == 34)
+                    int tmp_tag = jsonData.instance.AvatarRandomJsonData[num.ToString()]["NPCTag"].I;
+                    bool tmp_zhengxie = (jsonData.instance.NPCTagDate[tmp_tag.ToString()]["zhengxie"].I == 1);
+                    if (__instance.GetNpcBigLevel(num) <= Tools.instance.getPlayer().getLevelType() + 1 && __instance.GetNpcBigLevel(num) >= Tools.instance.getPlayer().getLevelType()
+                        && jsonData.instance.AvatarRandomJsonData[num.ToString()]["HaoGanDu"].I < 50
+                    //&& !tmp_zhengxie)
+                    && __instance.GetNpcData(num)["ActionId"].I == 34)
                     {
                         list.Add(num);
                     }
@@ -380,6 +320,13 @@ namespace zjr_mcs
                     num = 1080 * 4;
                     break;
             }
+            if (npcData["isImportant"].b)
+            {
+                if (npcBigLevel == 4 && npcData.HasField("HuaShengTime") && npcData.HasField("YuanYingAddSpeed"))
+                {
+                    num = 1296 * 4;
+                }
+            }
             if (npcBigLevel >= 5)
                 num = 1296 * 5;
             if (npcBigLevel <= 1 && npcData["MenPai"].I == 5)
@@ -406,6 +353,7 @@ namespace zjr_mcs
             return tmp_zizhi;
         }
     }
+
     [HarmonyPatch(typeof(NPCXiuLian), "NpcBiGuan", new Type[] { typeof(int) })]
     class npcbiguanxiulianPatch
     {
@@ -413,7 +361,7 @@ namespace zjr_mcs
         {
             NpcJieSuanManager.inst.npcUseItem.autoUseItem(npcId);
             JSONObject jsonobject = jsonData.instance.AvatarJsonData[npcId.ToString()];
-            int dongfu = 100;
+            int dongfu = 160;
             if (PlayerEx.IsDaoLv(npcId))
             {
                 dongfu = 210;
@@ -431,29 +379,6 @@ namespace zjr_mcs
             }
             NpcJieSuanManager.inst.npcSetField.AddNpcExp(npcId, num);
             return false;
-        }
-    }
-    [HarmonyPatch(typeof(CyEmail), "GetContent", new Type[] { typeof(string), typeof(EmailData) })]
-    class mailPatch
-    {
-        public static bool Prefix(CyEmail __instance, ref string __result, ref string msg, ref EmailData emailData)
-        {
-            if (emailData.npcId == 3)
-            {
-                int[] arr_tmp = new int[10];
-                int tmp_zong = 0;
-                foreach (var tmp in jsonData.instance.AvatarJsonData.list)
-                {
-                    int tmp_level = tmp["Level"].I;
-                    int tmp_big = (tmp_level - 1) / 3;
-                    arr_tmp[tmp_big]++;
-                    tmp_zong++;
-                }
-
-                __result = "总计" + tmp_zong.ToString() + "，练气" + arr_tmp[0].ToString() + "，筑基" + arr_tmp[1].ToString() + "，金丹" + arr_tmp[2].ToString() + "，元婴" + arr_tmp[3].ToString() + "，化神" + arr_tmp[4].ToString();
-                return false;
-            }
-            return true;
         }
     }
 }
