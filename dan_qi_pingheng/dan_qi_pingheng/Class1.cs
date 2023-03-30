@@ -221,7 +221,7 @@ namespace zjr_mcs
                     flag = !NPCEx.IsDeath(npcid);
                 }
                 int jiazhi = ShuangXiuJingYuanJiaZhi.DataDict[shuangXiuMiShu.ningliantype].jiazhi;
-                int i2 = ShuangXiuLianHuaSuDu.DataDict[i].speed * biGuanTime / jiazhi;
+                int i2 = (int)(Math.Min(UIBiGuanXiuLianPanel.GetBiguanSpeed(), ShuangXiuLianHuaSuDu.DataDict[i].speed) * biGuanTime / jiazhi);
                 if (i2 > 0)
                 {
                     if (shuangXiuMiShu.ningliantype == 1)
@@ -331,13 +331,7 @@ namespace zjr_mcs
                 num = 1296 * 5;
             if (npcBigLevel <= 1 && npcData["MenPai"].I == 5)
             {
-                foreach (var tmp in npcData["staticSkills"].list)
-                {
-                    if (num < jsonData.instance.StaticSkillJsonData[tmp.I.ToString()]["Skill_Speed"].I)
-                    {
-                        num = jsonData.instance.StaticSkillJsonData[tmp.I.ToString()]["Skill_Speed"].I;
-                    }
-                }
+                num = 360 * 3;
             }
             return num;
         }
@@ -361,7 +355,20 @@ namespace zjr_mcs
         {
             NpcJieSuanManager.inst.npcUseItem.autoUseItem(npcId);
             JSONObject jsonobject = jsonData.instance.AvatarJsonData[npcId.ToString()];
-            int dongfu = 160;
+            int npcBigLevel = NpcJieSuanManager.inst.GetNpcBigLevel(npcId);
+            int dongfu = 100;
+            switch (npcBigLevel)
+            {
+                case 3:
+                    dongfu = 150;
+                    break;
+                case 4:
+                    dongfu = 200;
+                    break;
+                case 5:
+                    dongfu = 210;
+                    break;
+            }
             if (PlayerEx.IsDaoLv(npcId))
             {
                 dongfu = 210;
