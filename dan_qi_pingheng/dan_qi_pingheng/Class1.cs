@@ -268,12 +268,9 @@ namespace zjr_mcs
             {
                 foreach (int num in __instance.npcMap.bigMapNPCDictionary[index])
                 {
-                    int tmp_tag = jsonData.instance.AvatarRandomJsonData[num.ToString()]["NPCTag"].I;
-                    bool tmp_zhengxie = (jsonData.instance.NPCTagDate[tmp_tag.ToString()]["zhengxie"].I == 1);
                     if (__instance.GetNpcBigLevel(num) <= Tools.instance.getPlayer().getLevelType() + 1 && __instance.GetNpcBigLevel(num) >= Tools.instance.getPlayer().getLevelType()
                         && jsonData.instance.AvatarRandomJsonData[num.ToString()]["HaoGanDu"].I < 50
-                    //&& !tmp_zhengxie)
-                    && __instance.GetNpcData(num)["ActionId"].I == 34)
+                        && __instance.GetNpcData(num)["ActionId"].I == 34)
                     {
                         list.Add(num);
                     }
