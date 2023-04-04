@@ -71,6 +71,16 @@ namespace zjr_mcs
                         __result = (int)(tmp_baseprice * .5f * newjiaCheng);
                     }
                 }
+                else if (jsonData.instance.AvatarJsonData[npcid.ToString()]["gudingjiage"].I != 1)
+                {
+                    if (num == 100)
+                    {
+                        float num3 = (float)jsonData.instance.getSellPercent(npcid, __instance.itemID) / 100f;
+                        float jiaCheng = __result / (tmp_baseprice) / num3;
+                        float newjiaCheng = jiaCheng - 1;
+                        __result = (int)(tmp_baseprice * newjiaCheng * num3);
+                    }
+                }
             }
         }
     }
@@ -100,6 +110,16 @@ namespace zjr_mcs
                         float jiaCheng = __result / (tmp_baseprice * .5f);
                         float newjiaCheng = jiaCheng - num * .01f + 1;
                         __result = (int)(tmp_baseprice * .5f * newjiaCheng);
+                    }
+                }
+                else if (jsonData.instance.AvatarJsonData[npcid.ToString()]["gudingjiage"].I != 1)
+                {
+                    if (num == 100)
+                    {
+                        float num3 = (float)jsonData.instance.getSellPercent(npcid, __instance.Id) / 100f;
+                        float jiaCheng = __result / (tmp_baseprice) / num3;
+                        float newjiaCheng = jiaCheng - 1;
+                        __result = (int)(tmp_baseprice * newjiaCheng * num3);
                     }
                 }
             }
