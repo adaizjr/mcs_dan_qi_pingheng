@@ -181,7 +181,7 @@ namespace zjr_mcs
             if (__instance.ZiZhi > 85)
                 __result = Math.Max(2, (__instance.ZiZhi - 85) * .01f + .85f) * speed;
             else
-                __result = Math.Max(-.4f, (__instance.ZiZhi - 15) / 56f - .4f) * speed;
+                __result = Math.Max(-.76f, (__instance.ZiZhi - 15) * .023f - .76f) * speed;
             return false;
         }
     }
@@ -194,7 +194,7 @@ namespace zjr_mcs
             KBEngine.Avatar player = PlayerEx.Player;
             int level = (int)player.level;
             level = (level + 5) / 3;
-            if (level + 1 < equipItem.GetImgQuality())
+            if (level + 1 < equipItem.GetImgQuality() && equipItem.Id != 1018)
             {
                 UIPopTip.Inst.Pop("超阶物品，无法使用", PopTipIconType.感悟);
             }
@@ -268,7 +268,8 @@ namespace zjr_mcs
             {
                 foreach (int num in __instance.npcMap.bigMapNPCDictionary[index])
                 {
-                    if (__instance.GetNpcBigLevel(num) <= Tools.instance.getPlayer().getLevelType() + 1 && __instance.GetNpcBigLevel(num) >= Tools.instance.getPlayer().getLevelType()
+                    if (//__instance.GetNpcBigLevel(num) <= Tools.instance.getPlayer().getLevelType() + 1 &&
+                        __instance.GetNpcBigLevel(num) >= Tools.instance.getPlayer().getLevelType()
                         && jsonData.instance.AvatarRandomJsonData[num.ToString()]["HaoGanDu"].I < 50
                         && __instance.GetNpcData(num)["ActionId"].I == 34)
                     {
@@ -339,7 +340,7 @@ namespace zjr_mcs
                 if (zizhi > 85)
                     tmp_zizhi = Math.Max(2, (zizhi - 85) * .01f + .85f);
                 else
-                    tmp_zizhi = Math.Max(-.4f, (zizhi - 15) / 56f - .4f);
+                    tmp_zizhi = Math.Max(-.76f, (zizhi - 15) * .023f - .76f);
             }
             return tmp_zizhi;
         }
