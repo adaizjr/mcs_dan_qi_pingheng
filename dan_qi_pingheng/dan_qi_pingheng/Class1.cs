@@ -67,7 +67,7 @@ namespace zjr_mcs
                     if (num < 100 && num >= 0)
                     {
                         float jiaCheng = __result / (tmp_baseprice * .5f);
-                        float newjiaCheng = jiaCheng - num * .01f + 1;
+                        float newjiaCheng = Mathf.Min(jiaCheng * 2, jiaCheng - num * .01f + 1);
                         __result = (int)(tmp_baseprice * .5f * newjiaCheng);
                     }
                 }
@@ -77,7 +77,7 @@ namespace zjr_mcs
                     {
                         float num3 = (float)jsonData.instance.getSellPercent(npcid, __instance.itemID) / 100f;
                         float jiaCheng = __result / (tmp_baseprice) / num3;
-                        float newjiaCheng = jiaCheng - 1;
+                        float newjiaCheng = jiaCheng - .975f;
                         __result = (int)(tmp_baseprice * newjiaCheng * num3);
                     }
                 }
@@ -108,7 +108,7 @@ namespace zjr_mcs
                     if (num < 100 && num >= 0)
                     {
                         float jiaCheng = __result / (tmp_baseprice * .5f);
-                        float newjiaCheng = jiaCheng - num * .01f + 1;
+                        float newjiaCheng = Mathf.Min(jiaCheng * 2, jiaCheng - num * .01f + 1);
                         __result = (int)(tmp_baseprice * .5f * newjiaCheng);
                     }
                 }
@@ -118,7 +118,7 @@ namespace zjr_mcs
                     {
                         float num3 = (float)jsonData.instance.getSellPercent(npcid, __instance.Id) / 100f;
                         float jiaCheng = __result / (tmp_baseprice) / num3;
-                        float newjiaCheng = jiaCheng - 1;
+                        float newjiaCheng = jiaCheng - .975f;
                         __result = (int)(tmp_baseprice * newjiaCheng * num3);
                     }
                 }
