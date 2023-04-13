@@ -211,10 +211,12 @@ namespace zjr_mcs
     {
         public static bool Prefix(Tab.TabWuPingPanel __instance, ref int index, ref EquipItem equipItem)
         {
+            if (equipItem.Id == 1018)
+                return true;
             KBEngine.Avatar player = PlayerEx.Player;
             int level = (int)player.level;
             level = (level + 5) / 3;
-            if (level + 1 < equipItem.GetImgQuality() && equipItem.Id != 1018)
+            if (level + 1 < equipItem.GetImgQuality())
             {
                 UIPopTip.Inst.Pop("超阶物品，无法使用", PopTipIconType.感悟);
             }
