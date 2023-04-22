@@ -81,6 +81,9 @@ namespace zjr_mcs
                         __result = (int)(tmp_baseprice * newjiaCheng * num3);
                     }
                 }
+                //int type = _ItemJsonData.DataDict[__instance.itemID].type;
+                //if (type == 5 && __instance.quality >= 4)
+                //    __result *= 2;
             }
         }
     }
@@ -122,6 +125,9 @@ namespace zjr_mcs
                         __result = (int)(tmp_baseprice * newjiaCheng * num3);
                     }
                 }
+                //int type = _ItemJsonData.DataDict[__instance.Id].type;
+                //if (type == 5 && __instance.GetBaseQuality() >= 4)
+                //    __result *= 2;
             }
         }
         static float get_naijiu_xishu(Bag.BaseItem __instance)
@@ -285,17 +291,19 @@ namespace zjr_mcs
     {
         public static bool Prefix(NpcJieSuanManager __instance, ref List<int> __result, ref int index)
         {
+            Debug.Log("hello jesha");
             List<int> list = new List<int>();
             if (__instance.npcMap.bigMapNPCDictionary.ContainsKey(index) && __instance.npcMap.bigMapNPCDictionary[index].Count > 0)
             {
                 foreach (int num in __instance.npcMap.bigMapNPCDictionary[index])
                 {
-                    if (//__instance.GetNpcBigLevel(num) <= Tools.instance.getPlayer().getLevelType() + 1 &&
-                        __instance.GetNpcBigLevel(num) >= Tools.instance.getPlayer().getLevelType()
-                        && jsonData.instance.AvatarRandomJsonData[num.ToString()]["HaoGanDu"].I < 50
-                        && __instance.GetNpcData(num)["ActionId"].I == 34)
+                    bool b_xie = jsonData.instance.AvatarJsonData[num.ToString()]["XingGe"].I >= 10;
+                    int tmp_level = jsonData.instance.AvatarJsonData[num.ToString()]["Level"].I;
+                    if (jsonData.instance.AvatarRandomJsonData[num.ToString()]["HaoGanDu"].I < 50)
                     {
-                        list.Add(num);
+                        if ((__instance.GetNpcBigLevel(num) >= Tools.instance.getPlayer().getLevelType() && __instance.GetNpcData(num)["ActionId"].I == 34)
+                        || (tmp_level >= Tools.instance.getPlayer().level && b_xie))
+                            list.Add(num);
                     }
                 }
             }
