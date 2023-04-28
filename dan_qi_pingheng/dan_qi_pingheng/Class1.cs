@@ -82,8 +82,8 @@ namespace zjr_mcs
                     }
                 }
                 //int type = _ItemJsonData.DataDict[__instance.itemID].type;
-                //if (type == 5 && __instance.quality >= 4)
-                //    __result *= 2;
+                //if (type == 5 && __instance.quality >= 4 && tmp_baseprice > 10000 && jsonData.instance.AvatarJsonData[npcid.ToString()]["gudingjiage"].I != 1)
+                //    __result = (int)(__result * 1.3f);
             }
         }
     }
@@ -126,8 +126,8 @@ namespace zjr_mcs
                     }
                 }
                 //int type = _ItemJsonData.DataDict[__instance.Id].type;
-                //if (type == 5 && __instance.GetBaseQuality() >= 4)
-                //    __result *= 2;
+                //if (type == 5 && __instance.GetBaseQuality() >= 4 && tmp_baseprice > 10000 && jsonData.instance.AvatarJsonData[npcid.ToString()]["gudingjiage"].I != 1)
+                //    __result = (int)(__result * 1.3f);
             }
         }
         static float get_naijiu_xishu(Bag.BaseItem __instance)
@@ -335,14 +335,14 @@ namespace zjr_mcs
         {
             JSONObject npcData = NpcJieSuanManager.inst.GetNpcData(npcId);
             int npcBigLevel = NpcJieSuanManager.inst.GetNpcBigLevel(npcId);
-            int num = 432 * 2;
+            int num = 288 * 2;
             switch (npcBigLevel)
             {
                 case 2:
                     num = 432 * 3;
                     break;
                 case 3:
-                    num = 1080 * 3;
+                    num = 864 * 3;
                     break;
                 case 4:
                     num = 1080 * 4;
@@ -414,6 +414,21 @@ namespace zjr_mcs
             }
             NpcJieSuanManager.inst.npcSetField.AddNpcExp(npcId, num);
             return false;
+        }
+    }
+
+    [HarmonyPatch(typeof(UIJianLingQingJiaoPanel), "Start")]
+    class JianlingPatch
+    {
+        public static bool Prefix(UIJianLingQingJiaoPanel __instance)
+        {
+            for (int i = 0; i < __instance.QingJiaoSkills.Count; i++)
+            {
+                JianLingQingJiao qingJiao = JianLingQingJiao.DataList[i];
+                if (qingJiao.JiYi == 70)
+                    qingJiao.JiYi = 69;
+            }
+            return true;
         }
     }
 }
