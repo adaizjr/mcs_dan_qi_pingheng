@@ -121,7 +121,7 @@ namespace zjr_mcs
                     {
                         float num3 = (float)jsonData.instance.getSellPercent(npcid, __instance.Id) / 100f;
                         float jiaCheng = __result / (tmp_baseprice) / num3;
-                        float newjiaCheng = jiaCheng - .975f;
+                        float newjiaCheng = jiaCheng - .95f;
                         __result = (int)(tmp_baseprice * newjiaCheng * num3);
                     }
                 }
@@ -204,10 +204,7 @@ namespace zjr_mcs
     {
         public static bool Prefix(Avatar __instance, ref float __result, ref float speed)
         {
-            if (__instance.ZiZhi > 85)
-                __result = Math.Max(2, (__instance.ZiZhi - 85) * .01f + .85f) * speed;
-            else
-                __result = Math.Max(-.76f, (__instance.ZiZhi - 15) * .023f - .76f) * speed;
+            __result = npcxiulianPatch.get_zizhi_xishu(__instance.ZiZhi) * speed;
             return false;
         }
     }
@@ -365,12 +362,12 @@ namespace zjr_mcs
         }
         public static float get_zizhi_xishu(int zizhi)
         {
-            float tmp_zizhi = -.4f;
+            float tmp_zizhi = -.76f;
             {
-                if (zizhi > 85)
-                    tmp_zizhi = Math.Max(2, (zizhi - 85) * .01f + .85f);
+                if (zizhi > 80)
+                    tmp_zizhi = Math.Max(2, zizhi * .01f);
                 else
-                    tmp_zizhi = Math.Max(-.76f, (zizhi - 15) * .023f - .76f);
+                    tmp_zizhi = .24f * Mathf.Pow(1.02887f, zizhi - 10) - 1;
             }
             return tmp_zizhi;
         }
