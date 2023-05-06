@@ -347,9 +347,13 @@ namespace zjr_mcs
             }
             if (npcData["isImportant"].b)
             {
-                if (npcBigLevel == 4 && npcData.HasField("HuaShengTime") && npcData.HasField("YuanYingAddSpeed"))
+                if (npcBigLevel == 4 && npcData.HasField("HuaShengTime"))
                 {
                     num = 1296 * 4;
+                }
+                if (npcBigLevel == 3 && npcData.HasField("YuanYingTime"))
+                {
+                    num = 1080 * 3;
                 }
             }
             if (npcBigLevel >= 5)
