@@ -77,7 +77,7 @@ namespace zjr_mcs
                     {
                         float num3 = (float)jsonData.instance.getSellPercent(npcid, __instance.itemID) / 100f;
                         float jiaCheng = __result / (tmp_baseprice) / num3;
-                        float newjiaCheng = jiaCheng - .975f;
+                        float newjiaCheng = jiaCheng - .95f;
                         __result = (int)(tmp_baseprice * newjiaCheng * num3);
                     }
                 }
@@ -369,7 +369,7 @@ namespace zjr_mcs
             float tmp_zizhi = -.76f;
             {
                 if (zizhi > 80)
-                    tmp_zizhi = Math.Max(2, zizhi * .01f);
+                    tmp_zizhi = zizhi * .01f;
                 else
                     tmp_zizhi = .24f * Mathf.Pow(1.02887f, zizhi - 10) - 1;
             }
