@@ -1,0 +1,101 @@
+{
+  "60001": {
+    "id": 60001,
+    "ShopID": 6,
+    "EXGoodsID": 10005,
+    "Money": 125,
+    "GoodsID": 5406,
+    "percent": 0
+  },
+  "60002": {
+    "id": 60002,
+    "ShopID": 6,
+    "EXGoodsID": 10005,
+    "Money": 50,
+    "GoodsID": 3901,
+    "percent": 0
+  },
+  "60003": {
+    "id": 60003,
+    "ShopID": 6,
+    "EXGoodsID": 10005,
+    "Money": 50,
+    "GoodsID": 3904,
+    "percent": 0
+  },
+  "60004": {
+    "id": 60004,
+    "ShopID": 6,
+    "EXGoodsID": 10005,
+    "Money": 60,
+    "GoodsID": 3902,
+    "percent": 0
+  },
+
+  "60011": {
+    "id": 60011,
+    "ShopID": 6,
+    "EXGoodsID": 10005,
+    "Money": 900,
+    "GoodsID": 5423,
+    "percent": 0
+  },
+  "60012": {
+    "id": 60012,
+    "ShopID": 6,
+    "EXGoodsID": 10005,
+    "Money": 900,
+    "GoodsID": 5424,
+    "percent": 0
+  },
+  "60013": {
+    "id": 60013,
+    "ShopID": 6,
+    "EXGoodsID": 10005,
+    "Money": 1500,
+    "GoodsID": 5425,
+    "percent": 0
+  },
+  "60014": {
+    "id": 60014,
+    "ShopID": 6,
+    "EXGoodsID": 10005,
+    "Money": 500,
+    "GoodsID": 3912,
+    "percent": 0
+  },
+
+  "60021": {
+    "id": 60021,
+    "ShopID": 6,
+    "EXGoodsID": 10005,
+    "Money": 11000,
+    "GoodsID": 5520,
+    "percent": 0
+  },
+  "60022": {
+    "id": 60022,
+    "ShopID": 6,
+    "EXGoodsID": 10005,
+    "Money": 11000,
+    "GoodsID": 5521,
+    "percent": 0
+  },
+  "60023": {
+    "id": 60023,
+    "ShopID": 6,
+    "EXGoodsID": 10005,
+    "Money": 11000,
+    "GoodsID": 5522,
+    "percent": 0
+  },
+
+  "61000": {
+    "id": 61000,
+    "ShopID": 6,
+    "EXGoodsID": 10035,
+    "Money": 150,
+    "GoodsID": 10005,
+    "percent": 0
+  }
+}

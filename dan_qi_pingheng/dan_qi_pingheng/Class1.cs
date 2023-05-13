@@ -183,6 +183,36 @@ namespace zjr_mcs
         }
     }
 
+    //[HarmonyPatch(typeof(DanFangChildCell), "clickDanFang")]
+    //class danfangPatch
+    //{
+    //    public static bool Prefix(DanFangChildCell __instance)
+    //    {
+    //        Debug.Log("hello,danfang");
+    //        if (LianDanSystemManager.inst.DanFangPageManager.checkCanLianZhi(__instance.danFang))
+    //        {
+    //            KBEngine.Avatar player = PlayerEx.Player;
+    //            int level = (int)player.level;
+    //            level = (level + 5) / 3;
+
+    //            JSONObject tmp_list = __instance.danFang["Type"];
+    //            GUIPackage.ItemDatebase component = jsonData.instance.gameObject.GetComponent<GUIPackage.ItemDatebase>();
+    //            for (int i = 0; i < tmp_list.Count; i++)
+    //            {
+    //                if (tmp_list[i].I > 0)
+    //                {
+    //                    Debug.Log(tmp_list[i].ToString());
+    //                    if (level + 1 < component.items[tmp_list[i].I].quality)
+    //                    {
+    //                        UIPopTip.Inst.Pop("超阶物品，无法使用", PopTipIconType.感悟);
+    //                        return false;
+    //                    }
+    //                }
+    //            }
+    //        }
+    //        return true;
+    //    }
+    //}
     [HarmonyPatch(typeof(LianQiTotalManager), "PutItem", new Type[] { typeof(LianQiSlot) })]
     class DuanzaoPatch
     {

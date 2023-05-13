@@ -1,0 +1,42 @@
+{
+	"1":{
+		"id":1,
+		"dropType":0,
+		"Title":"胜利",
+		"loseHp":99,
+		"round":99999,
+		"moneydrop":100,
+		"backpack":100,
+		"wepen":100,
+		"cloth":25,
+		"ring":25,
+		"TextDesc":"你击败了你的对手。现在，他的储物袋归你了。"
+	},
+	"2":{
+		"id":2,
+		"dropType":2,
+		"Title":"胜利",
+		"loseHp":99,
+		"round":99999,
+		"moneydrop":100,
+		"backpack":100,
+		"wepen":0,
+		"cloth":0,
+		"ring":0,
+		"TextDesc":"一场重大的胜利。现在，对手的储物袋归你了。"
+	},
+	"3":{
+		"id":3,
+		"dropType":3,
+		"Title":"胜利",
+		"loseHp":99,
+		"round":99999,
+		"moneydrop":100,
+		"backpack":100,
+		"wepen":0,
+		"cloth":0,
+		"ring":0,
+		"TextDesc":"你击败了你的对手。现在，他的储物袋归你了。"
+	},
+	
+}

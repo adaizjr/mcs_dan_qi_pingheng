@@ -1,0 +1,22 @@
+{
+	"buffid":4400,
+	"BuffIcon":4243,
+	"skillEffect":"fx_Summoner_o",
+	"name":"九转驭剑",
+	"Affix":[
+		65
+	],
+	"bufftype":2,
+	"seid":[
+		50
+	],
+	"descr":"剑系技能伤害提升（attack）",
+	"trigger":9,
+	"removeTrigger":7,
+	"script":"Buff",
+	"looptime":1,
+	"totaltime":1,
+	"BuffType":0,
+	"isHide":0,
+	"ShowOnlyOne":0
+}
