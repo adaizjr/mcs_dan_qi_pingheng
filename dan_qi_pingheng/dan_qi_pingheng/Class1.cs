@@ -277,6 +277,26 @@ namespace zjr_mcs
                 }
                 int jiazhi = ShuangXiuJingYuanJiaZhi.DataDict[shuangXiuMiShu.ningliantype].jiazhi;
                 int i2 = (int)(Math.Min(UIBiGuanXiuLianPanel.GetBiguanSpeed(), ShuangXiuLianHuaSuDu.DataDict[i].speed) * biGuanTime / jiazhi);
+                if (jiazhi > 1)
+                {
+                    int tmp_shengyu = (int)(Math.Min(UIBiGuanXiuLianPanel.GetBiguanSpeed(), ShuangXiuLianHuaSuDu.DataDict[i].speed) * biGuanTime - jiazhi * i2);
+                    if (tmp_shengyu > 0)
+                    {
+                        int num = jsonobject["Count"].I;
+                        if (num > jiazhi)
+                        {
+                            player.ShuangXiuData["JingYuan"].SetField("Count", tmp_shengyu + 1);
+                        }
+                        else
+                        {
+                            if (num + tmp_shengyu >= jiazhi)
+                            {
+                                i2++;
+                            }
+                            player.ShuangXiuData["JingYuan"].SetField("Count", (tmp_shengyu + num) % jiazhi + 1);
+                        }
+                    }
+                }
                 if (i2 > 0)
                 {
                     if (shuangXiuMiShu.ningliantype == 1)

@@ -1,4 +1,9 @@
 {
+	"1046":{
+		"id":1046,
+		"itemid":5402,
+		"jiagexishu":160
+	},
 	"1047":{
 		"id":1047,
 		"itemid":5402,
@@ -19,6 +24,26 @@
 		"itemid":5302,
 		"jiagexishu":160
 	},
+	"1057":{
+		"id":1057,
+		"itemid":5402,
+		"jiagexishu":160
+	},
+	"1058":{
+		"id":1058,
+		"itemid":5402,
+		"jiagexishu":160
+	},
+	"1059":{
+		"id":1059,
+		"itemid":5402,
+		"jiagexishu":160
+	},
+	"1060":{
+		"id":1060,
+		"itemid":5402,
+		"jiagexishu":160
+	},
 	"1061":{
 		"id":1061,
 		"itemid":5209,
@@ -28,6 +53,31 @@
 		"id":1062,
 		"itemid":5210,
 		"shengwang":3
+	},
+	"1063":{
+		"id":1063,
+		"itemid":5402,
+		"jiagexishu":160
+	},
+	"1064":{
+		"id":1064,
+		"itemid":5402,
+		"jiagexishu":160
+	},
+	"1065":{
+		"id":1065,
+		"itemid":5402,
+		"jiagexishu":160
+	},
+	"1066":{
+		"id":1066,
+		"itemid":5402,
+		"jiagexishu":160
+	},
+	"1546":{
+		"id":1546,
+		"itemid":5402,
+		"jiagexishu":160
 	},
 	"1547":{
 		"id":1547,
@@ -49,6 +99,26 @@
 		"itemid":5302,
 		"jiagexishu":160
 	},
+	"1557":{
+		"id":1557,
+		"itemid":5402,
+		"jiagexishu":160
+	},
+	"1558":{
+		"id":1558,
+		"itemid":5402,
+		"jiagexishu":160
+	},
+	"1559":{
+		"id":1559,
+		"itemid":5402,
+		"jiagexishu":160
+	},
+	"1560":{
+		"id":1560,
+		"itemid":5402,
+		"jiagexishu":160
+	},
 	"1561":{
 		"id":1561,
 		"itemid":5209,
@@ -58,5 +128,25 @@
 		"id":1562,
 		"itemid":5210,
 		"shengwang":3
+	},
+	"1563":{
+		"id":1563,
+		"itemid":5402,
+		"jiagexishu":160
+	},
+	"1564":{
+		"id":1564,
+		"itemid":5402,
+		"jiagexishu":160
+	},
+	"1565":{
+		"id":1565,
+		"itemid":5402,
+		"jiagexishu":160
+	},
+	"1566":{
+		"id":1566,
+		"itemid":5402,
+		"jiagexishu":160
 	}
 }
