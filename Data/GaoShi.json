@@ -19,8 +19,18 @@
 		"itemid":5402,
 		"jiagexishu":160
 	},
+	"1053":{
+		"id":1053,
+		"itemid":5302,
+		"jiagexishu":160
+	},
 	"1054":{
 		"id":1054,
+		"itemid":5302,
+		"jiagexishu":160
+	},
+	"1056":{
+		"id":1056,
 		"itemid":5302,
 		"jiagexishu":160
 	},
@@ -94,8 +104,18 @@
 		"itemid":5402,
 		"jiagexishu":160
 	},
+	"1553":{
+		"id":1553,
+		"itemid":5302,
+		"jiagexishu":160
+	},
 	"1554":{
 		"id":1554,
+		"itemid":5302,
+		"jiagexishu":160
+	},
+	"1556":{
+		"id":1556,
 		"itemid":5302,
 		"jiagexishu":160
 	},

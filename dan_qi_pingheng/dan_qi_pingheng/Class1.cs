@@ -26,22 +26,31 @@ namespace zjr_mcs
     [HarmonyPatch(typeof(GUIPackage.item), "gongneng")]
     class DanduPatch
     {
-        public static void Postfix(GUIPackage.item __instance)
+        public static bool Prefix(GUIPackage.item __instance)
         {
-            int type = _ItemJsonData.DataDict[__instance.itemID].type;
-            if (type == 5 && !jsonData.instance.ItemJsonData[string.Concat(__instance.itemID)]["seid"].ToList().Contains(31))
+            if (_ItemJsonData.DataDict.ContainsKey(__instance.itemID))
             {
-                KBEngine.Avatar player = PlayerEx.Player;
-                int level = (int)player.level;
-                level = (level + 5) / 3;
-                KBEngine.Avatar avatar = (KBEngine.Avatar)KBEngineApp.app.player();
-                if (__instance.quality > level + 1)
+                int type = _ItemJsonData.DataDict[__instance.itemID].type;
+                if (type == 5 && !jsonData.instance.ItemJsonData[string.Concat(__instance.itemID)]["seid"].ToList().Contains(31))
                 {
-                    avatar.AddDandu((__instance.quality - level - 1) * 30);
+                    int itemCanUseNum = GUIPackage.item.GetItemCanUseNum(__instance.itemID);
+                    if (itemCanUseNum > 0 && Tools.getJsonobject(Tools.instance.getPlayer().NaiYaoXin, string.Concat(__instance.itemID)) < itemCanUseNum)
+                    {
+                        KBEngine.Avatar player = PlayerEx.Player;
+                        int level = (int)player.level;
+                        level = (level + 5) / 3;
+                        KBEngine.Avatar avatar = (KBEngine.Avatar)KBEngineApp.app.player();
+                        if (__instance.quality > level + 1)
+                        {
+                            int tmp_dandu = (__instance.quality - level - 1) * 30;
+                            avatar.AddDandu(tmp_dandu);
 
-                    UIPopTip.Inst.Pop("超阶吃药，毒性大增", PopTipIconType.感悟);
+                            UIPopTip.Inst.Pop("超阶吃药，毒性大增" + tmp_dandu.ToString(), PopTipIconType.感悟);
+                        }
+                    }
                 }
             }
+            return true;
         }
     }
 
@@ -81,9 +90,6 @@ namespace zjr_mcs
                         __result = (int)(tmp_baseprice * newjiaCheng * num3);
                     }
                 }
-                //int type = _ItemJsonData.DataDict[__instance.itemID].type;
-                //if (type == 5 && __instance.quality >= 4 && tmp_baseprice > 10000 && jsonData.instance.AvatarJsonData[npcid.ToString()]["gudingjiage"].I != 1)
-                //    __result = (int)(__result * 1.3f);
             }
         }
     }
@@ -181,38 +187,7 @@ namespace zjr_mcs
             }
             return level + 1 >= dragSlot.Item.GetImgQuality();
         }
-    }
-
-    //[HarmonyPatch(typeof(DanFangChildCell), "clickDanFang")]
-    //class danfangPatch
-    //{
-    //    public static bool Prefix(DanFangChildCell __instance)
-    //    {
-    //        Debug.Log("hello,danfang");
-    //        if (LianDanSystemManager.inst.DanFangPageManager.checkCanLianZhi(__instance.danFang))
-    //        {
-    //            KBEngine.Avatar player = PlayerEx.Player;
-    //            int level = (int)player.level;
-    //            level = (level + 5) / 3;
-
-    //            JSONObject tmp_list = __instance.danFang["Type"];
-    //            GUIPackage.ItemDatebase component = jsonData.instance.gameObject.GetComponent<GUIPackage.ItemDatebase>();
-    //            for (int i = 0; i < tmp_list.Count; i++)
-    //            {
-    //                if (tmp_list[i].I > 0)
-    //                {
-    //                    Debug.Log(tmp_list[i].ToString());
-    //                    if (level + 1 < component.items[tmp_list[i].I].quality)
-    //                    {
-    //                        UIPopTip.Inst.Pop("超阶物品，无法使用", PopTipIconType.感悟);
-    //                        return false;
-    //                    }
-    //                }
-    //            }
-    //        }
-    //        return true;
-    //    }
-    //}
+    }    
     [HarmonyPatch(typeof(LianQiTotalManager), "PutItem", new Type[] { typeof(LianQiSlot) })]
     class DuanzaoPatch
     {
