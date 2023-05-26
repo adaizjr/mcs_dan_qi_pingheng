@@ -357,7 +357,7 @@ namespace zjr_mcs
         {
             JSONObject npcData = NpcJieSuanManager.inst.GetNpcData(npcId);
             int npcBigLevel = NpcJieSuanManager.inst.GetNpcBigLevel(npcId);
-            int num = 288 * 2;
+            int num = 432 * 2;
             switch (npcBigLevel)
             {
                 case 2:
