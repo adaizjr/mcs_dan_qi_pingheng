@@ -31,7 +31,8 @@ namespace zjr_mcs
             if (_ItemJsonData.DataDict.ContainsKey(__instance.itemID))
             {
                 int type = _ItemJsonData.DataDict[__instance.itemID].type;
-                if (type == 5 && !jsonData.instance.ItemJsonData[string.Concat(__instance.itemID)]["seid"].ToList().Contains(31))
+                if (type == 5 && !jsonData.instance.ItemJsonData[string.Concat(__instance.itemID)]["seid"].ToList().Contains(31)
+                    && !jsonData.instance.ItemJsonData[string.Concat(__instance.itemID)]["seid"].ToList().Contains(16))
                 {
                     int itemCanUseNum = GUIPackage.item.GetItemCanUseNum(__instance.itemID);
                     if (itemCanUseNum > 0 && Tools.getJsonobject(Tools.instance.getPlayer().NaiYaoXin, string.Concat(__instance.itemID)) < itemCanUseNum)
@@ -131,9 +132,6 @@ namespace zjr_mcs
                         __result = (int)(tmp_baseprice * newjiaCheng * num3);
                     }
                 }
-                //int type = _ItemJsonData.DataDict[__instance.Id].type;
-                //if (type == 5 && __instance.GetBaseQuality() >= 4 && tmp_baseprice > 10000 && jsonData.instance.AvatarJsonData[npcid.ToString()]["gudingjiage"].I != 1)
-                //    __result = (int)(__result * 1.3f);
             }
         }
         static float get_naijiu_xishu(Bag.BaseItem __instance)
@@ -187,7 +185,7 @@ namespace zjr_mcs
             }
             return level + 1 >= dragSlot.Item.GetImgQuality();
         }
-    }    
+    }
     [HarmonyPatch(typeof(LianQiTotalManager), "PutItem", new Type[] { typeof(LianQiSlot) })]
     class DuanzaoPatch
     {
@@ -321,7 +319,7 @@ namespace zjr_mcs
                 {
                     bool b_xie = jsonData.instance.AvatarJsonData[num.ToString()]["XingGe"].I >= 10;
                     int tmp_level = jsonData.instance.AvatarJsonData[num.ToString()]["Level"].I;
-                    if (jsonData.instance.AvatarRandomJsonData[num.ToString()]["HaoGanDu"].I < 50)
+                    if (jsonData.instance.AvatarRandomJsonData[num.ToString()]["HaoGanDu"].I < 40)
                     {
                         if ((__instance.GetNpcBigLevel(num) >= Tools.instance.getPlayer().getLevelType() && __instance.GetNpcData(num)["ActionId"].I == 34)
                         || (tmp_level >= Tools.instance.getPlayer().level && b_xie))
