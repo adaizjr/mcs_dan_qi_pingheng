@@ -345,7 +345,10 @@ namespace zjr_mcs
             num = (int)(num * (1 + tmp_zizhi));
             if (npcData.HasField("JinDanData"))
             {
-                float num2 = npcData["JinDanData"]["JinDanAddSpeed"].f / 100f;
+                int tmp_jindanlv = npcData["JinDanData"]["JinDanLv"].I;
+                int npcBigLevel = NpcJieSuanManager.inst.GetNpcBigLevel(npcId);
+                float num2 = (npcBigLevel >= 4 ? .18f : 0) + .18f + (tmp_jindanlv - 9) * .06f;
+                //float num2 = npcData["JinDanData"]["JinDanAddSpeed"].f / 100f;
                 num += (int)(num2 * (float)num);
             }
             __instance.npcSetField.AddNpcExp(npcId, (int)((float)num * times));
@@ -381,10 +384,10 @@ namespace zjr_mcs
             }
             if (npcBigLevel >= 5)
                 num = 1296 * 5;
-            if (npcBigLevel <= 1 && npcData["MenPai"].I == 5)
-            {
-                num = 360 * 3;
-            }
+            //if (npcBigLevel <= 1 && npcData["MenPai"].I == 5)
+            //{
+            //    num = 360 * 3;
+            //}
             return num;
         }
         public static float get_zizhi_xishu(int zizhi)
