@@ -6,9 +6,10 @@
 	"Affix":[],
 	"bufftype":6,
 	"seid":[
+		42,
 		67
 	],
-	"descr":"回合开始时，每有【剑气】10点则获得【剑气】*（attack）。",
+	"descr":"回合开始时，每有【剑气】10点则获得【剑气】*（attack）。每次使用剑系技能，获得【剑气】*（attack）。",
 	"trigger":2,
 	"removeTrigger":7,
 	"script":"Buff",
