@@ -436,7 +436,8 @@ namespace zjr_mcs
             num = (int)(num * (tmp_zizhi + dongfu * 1.2f / 100));
             if (npcData.HasField("JinDanData"))
             {
-                float num2 = npcData["JinDanData"]["JinDanAddSpeed"].f / 100f;
+                int tmp_jindanlv = npcData["JinDanData"]["JinDanLv"].I;
+                float num2 = (npcBigLevel >= 4 ? .18f : 0) + .18f + (tmp_jindanlv - 9) * .06f;
                 num += (int)(num2 * (float)num);
             }
             NpcJieSuanManager.inst.npcSetField.AddNpcExp(npcId, num);
