@@ -19,6 +19,18 @@
 		"itemid":5402,
 		"jiagexishu":160
 	},
+	"1050":{
+		"id":1050,
+		"itemid":5402,
+		"jiagexishu":160,
+		"shengwang":15
+	},
+	"1051":{
+		"id":1051,
+		"itemid":5402,
+		"jiagexishu":160,
+		"shengwang":15
+	},
 	"1053":{
 		"id":1053,
 		"itemid":5302,
@@ -103,6 +115,18 @@
 		"id":1549,
 		"itemid":5402,
 		"jiagexishu":160
+	},
+	"1550":{
+		"id":1550,
+		"itemid":5402,
+		"jiagexishu":160,
+		"shengwang":15
+	},
+	"1551":{
+		"id":1551,
+		"itemid":5402,
+		"jiagexishu":160,
+		"shengwang":15
 	},
 	"1553":{
 		"id":1553,
