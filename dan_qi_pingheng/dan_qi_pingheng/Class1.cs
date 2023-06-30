@@ -211,6 +211,22 @@ namespace zjr_mcs
             return false;
         }
     }
+    [HarmonyPatch(typeof(Avatar), "getJieDanSkillAddExp")]
+    class jiedanPatch
+    {
+        public static bool Prefix(Avatar __instance, ref float __result)
+        {
+            int num = 37;
+            if (__instance.level >= 10)
+                num += 18;
+            foreach (SkillItem skillItem in __instance.hasJieDanSkillList)
+            {
+                num += (int)jsonData.instance.JieDanBiao[skillItem.itemId.ToString()]["EXP"].n * 9;
+            }
+            __result = (float)num / 100f;
+            return false;
+        }
+    }
 
     [HarmonyPatch(typeof(Tab.TabWuPingPanel), "AddEquip", new Type[] { typeof(int), typeof(EquipItem) })]
     class EquipPatch
