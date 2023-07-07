@@ -221,7 +221,7 @@ namespace zjr_mcs
                 num += 18;
             foreach (SkillItem skillItem in __instance.hasJieDanSkillList)
             {
-                num += (int)jsonData.instance.JieDanBiao[skillItem.itemId.ToString()]["EXP"].n * 9;
+                num += (int)jsonData.instance.JieDanBiao[skillItem.itemId.ToString()]["EXP"].n * 9 / 2;
             }
             __result = (float)num / 100f;
             return false;
@@ -482,6 +482,165 @@ namespace zjr_mcs
                     qingJiao.JiYi = 69;
             }
             return true;
+        }
+    }
+
+    [HarmonyPatch(typeof(ShowXiaoGuoManager), "getTotalCiTiao")]
+    class lianqi_sxgm_Patch
+    {
+        public static bool Prefix(ShowXiaoGuoManager __instance)
+        {
+            my_getTotalCiTiao(__instance);
+            return false;
+        }
+        static void my_getTotalCiTiao(ShowXiaoGuoManager __instance)
+        {
+            List<PutMaterialCell> caiLiaoCells = LianQiTotalManager.inst.putMaterialPageManager.lianQiPageManager.putCaiLiaoCell.caiLiaoCells;
+            __instance.entryDictionary = new Dictionary<int, int>();
+            Dictionary<int, int> dictionary = new Dictionary<int, int>();
+            for (int i = 0; i < caiLiaoCells.Count; i++)
+            {
+                if (caiLiaoCells[i].shuXingTypeID != 0)
+                {
+                    if (caiLiaoCells[i].shuXingTypeID >= 49 && caiLiaoCells[i].shuXingTypeID <= 56)
+                    {
+                        if (__instance.entryDictionary.ContainsKey(49))
+                        {
+                            Dictionary<int, int> dictionary2 = __instance.entryDictionary;
+                            dictionary2[49] = dictionary2[49] + caiLiaoCells[i].lingLi;
+                            dictionary2 = dictionary;
+                            dictionary2[49] = dictionary2[49] + 1;
+                        }
+                        else
+                        {
+                            __instance.entryDictionary.Add(49, caiLiaoCells[i].lingLi);
+                            dictionary.Add(49, 1);
+                        }
+                    }
+                    else if (caiLiaoCells[i].shuXingTypeID >= 1 && caiLiaoCells[i].shuXingTypeID <= 8)
+                    {
+                        if (__instance.entryDictionary.ContainsKey(1))
+                        {
+                            Dictionary<int, int> dictionary2 = __instance.entryDictionary;
+                            dictionary2[1] = dictionary2[1] + caiLiaoCells[i].lingLi;
+                            dictionary2 = dictionary;
+                            dictionary2[1] = dictionary2[1] + 1;
+                        }
+                        else
+                        {
+                            __instance.entryDictionary.Add(1, caiLiaoCells[i].lingLi);
+                            dictionary.Add(1, 1);
+                        }
+                    }
+                    else if (__instance.entryDictionary.ContainsKey(caiLiaoCells[i].shuXingTypeID))
+                    {
+                        Dictionary<int, int> dictionary2 = __instance.entryDictionary;
+                        int shuXingTypeID = caiLiaoCells[i].shuXingTypeID;
+                        dictionary2[shuXingTypeID] += caiLiaoCells[i].lingLi;
+                        dictionary2 = dictionary;
+                        shuXingTypeID = caiLiaoCells[i].shuXingTypeID;
+                        dictionary2[shuXingTypeID]++;
+                    }
+                    else
+                    {
+                        __instance.entryDictionary.Add(caiLiaoCells[i].shuXingTypeID, caiLiaoCells[i].lingLi);
+                        dictionary.Add(caiLiaoCells[i].shuXingTypeID, 1);
+                    }
+                }
+            }
+            if (__instance.entryDictionary.Keys.Count == 0)
+            {
+                return;
+            }
+            float wuWeiBaiFenBi = LianQiTotalManager.inst.putMaterialPageManager.wuWeiManager.getWuWeiBaiFenBi();
+            int selectLingWenID = LianQiTotalManager.inst.putMaterialPageManager.lingWenManager.getSelectLingWenID();
+            int num = -1;
+            float num2 = -1f;
+            KBEngine.Avatar player = Tools.instance.getPlayer();
+            int wuDaoLevelByType = player.wuDaoMag.getWuDaoLevelByType(22);
+            bool flag = false;
+            if (player.checkHasStudyWuDaoSkillByID(2241))
+            {
+                flag = true;
+            }
+            if (selectLingWenID > 0)
+            {
+                num = jsonData.instance.LianQiLingWenBiao[selectLingWenID.ToString()]["value3"].I;
+                num2 = jsonData.instance.LianQiLingWenBiao[selectLingWenID.ToString()]["value4"].n;
+            }
+            JSONObject lianQiHeCheng = jsonData.instance.LianQiHeCheng;
+            Dictionary<int, int> dictionary3 = new Dictionary<int, int>();
+            foreach (int num3 in __instance.entryDictionary.Keys)
+            {
+                int num4 = __instance.entryDictionary[num3];
+                num4 = (int)((float)num4 * wuWeiBaiFenBi);
+                if (num3 == 49)
+                {
+                    if (num4 >= jsonData.instance.LianQiDuoDuanShangHaiBiao["1"]["cast"].I)
+                    {
+                        dictionary3.Add(num3, num4);
+                    }
+                }
+                else
+                {
+                    int i2 = lianQiHeCheng[num3.ToString()]["cast"].I;
+                    if (num4 >= i2)
+                    {
+                        dictionary3.Add(num3, num4);
+                    }
+                }
+            }
+            if (dictionary3.Keys.Count == 0)
+            {
+                __instance.entryDictionary = dictionary3;
+                return;
+            }
+            Dictionary<int, int> dictionary4 = new Dictionary<int, int>();
+            int num5 = 0;
+            foreach (int key in dictionary3.Keys)
+            {
+                num5 += dictionary[key];
+            }
+            if (selectLingWenID > 0 && num == 2)
+            {
+                num2 /= (float)num5;
+            }
+            foreach (int key2 in dictionary3.Keys)
+            {
+                int num6 = dictionary3[key2];
+                if (selectLingWenID > 0)
+                {
+                    if (num == 1)
+                    {
+                        num6 = (int)((float)num6 * num2);
+                    }
+                    else
+                    {
+                        int num7 = (int)(num2 * (float)dictionary[key2]);
+                        num6 += num7;
+                    }
+                }
+                num6 = (int)(num6 * (1 + .1f * wuDaoLevelByType));
+                if (flag)
+                {
+                    num6 = (int)((float)num6 * 1.5f);
+                }
+                int i3 = lianQiHeCheng[key2.ToString()]["cast"].I;
+                int value = num6 / i3;
+                dictionary4.Add(key2, value);
+            }
+            __instance.entryDictionary = dictionary4;
+        }
+    }
+
+    [HarmonyPatch(typeof(ZhongLingLiManager), "getTotalZongLingLi")]
+    class lianqi_zllm_Patch
+    {
+        public static void Postfix(ZhongLingLiManager __instance, ref float __result)
+        {
+            KBEngine.Avatar player = Tools.instance.getPlayer();
+            int wuDaoLevelByType = player.wuDaoMag.getWuDaoLevelByType(22);
+            __result = __result * (1 + .1f * wuDaoLevelByType);
         }
     }
 }
