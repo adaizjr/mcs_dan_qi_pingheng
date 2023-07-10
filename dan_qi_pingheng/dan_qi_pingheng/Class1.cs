@@ -216,15 +216,26 @@ namespace zjr_mcs
     {
         public static bool Prefix(Avatar __instance, ref float __result)
         {
-            int num = 37;
-            if (__instance.level >= 10)
-                num += 18;
-            foreach (SkillItem skillItem in __instance.hasJieDanSkillList)
-            {
-                num += (int)jsonData.instance.JieDanBiao[skillItem.itemId.ToString()]["EXP"].n * 9 / 2;
-            }
-            __result = (float)num / 100f;
+            __result = my_jindanxishu(__instance);
             return false;
+        }
+        static float my_jindanxishu(Avatar __instance)
+        {
+            if (__instance.level <= 6)
+            {
+                return 1;
+            }
+            else
+            {
+                int num = 37;
+                if (__instance.level >= 10)
+                    num += 18;
+                foreach (SkillItem skillItem in __instance.hasJieDanSkillList)
+                {
+                    num += (int)jsonData.instance.JieDanBiao[skillItem.itemId.ToString()]["EXP"].n * 9 / 2;
+                }
+                return num * .01f;
+            }
         }
     }
 
