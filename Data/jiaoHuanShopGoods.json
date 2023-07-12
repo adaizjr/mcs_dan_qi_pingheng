@@ -89,6 +89,30 @@
     "GoodsID": 5522,
     "percent": 0
   },
+  "60024": {
+    "id": 60024,
+    "ShopID": 6,
+    "EXGoodsID": 10005,
+    "Money": 150,
+    "GoodsID": 3817,
+    "percent": 0
+  },
+  "60025": {
+    "id": 60025,
+    "ShopID": 6,
+    "EXGoodsID": 10005,
+    "Money": 12,
+    "GoodsID": 3712,
+    "percent": 0
+  },
+  "60026": {
+    "id": 60026,
+    "ShopID": 6,
+    "EXGoodsID": 10005,
+    "Money": 12,
+    "GoodsID": 3713,
+    "percent": 0
+  },
 
   "61000": {
     "id": 61000,
@@ -96,6 +120,14 @@
     "EXGoodsID": 10035,
     "Money": 150,
     "GoodsID": 10005,
+    "percent": 0
+  },
+  "61001": {
+    "id": 61001,
+    "ShopID": 6,
+    "EXGoodsID": 10035,
+    "Money": 15000,
+    "GoodsID": 10071,
     "percent": 0
   }
 }

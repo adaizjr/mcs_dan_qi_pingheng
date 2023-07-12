@@ -228,11 +228,12 @@ namespace zjr_mcs
             else
             {
                 int num = 37;
-                if (__instance.level >= 10)
-                    num += 18;
                 foreach (SkillItem skillItem in __instance.hasJieDanSkillList)
                 {
-                    num += (int)jsonData.instance.JieDanBiao[skillItem.itemId.ToString()]["EXP"].n * 9 / 2;
+                    if (__instance.level >= 10)
+                        num += (int)jsonData.instance.JieDanBiao[skillItem.itemId.ToString()]["EXP"].n * 11 / 2;
+                    else
+                        num += (int)jsonData.instance.JieDanBiao[skillItem.itemId.ToString()]["EXP"].n * 9 / 2;
                 }
                 return num * .01f;
             }
@@ -349,7 +350,7 @@ namespace zjr_mcs
                     if (jsonData.instance.AvatarRandomJsonData[num.ToString()]["HaoGanDu"].I < 40)
                     {
                         if ((__instance.GetNpcBigLevel(num) >= Tools.instance.getPlayer().getLevelType() && __instance.GetNpcData(num)["ActionId"].I == 34)
-                        || (tmp_level >= Tools.instance.getPlayer().level && b_xie))
+                        || (tmp_level > Tools.instance.getPlayer().level && b_xie))
                             list.Add(num);
                     }
                 }
@@ -374,12 +375,12 @@ namespace zjr_mcs
             if (npcData.HasField("JinDanData"))
             {
                 int tmp_jindanlv = npcData["JinDanData"]["JinDanLv"].I;
-                float num2 = (npcBigLevel >= 4 ? .18f : 0) + .18f + (tmp_jindanlv - 9) * .09f;
+                float num2 = npcbiguanxiulianPatch.myget_jindan_xishu(npcBigLevel, tmp_jindanlv);
                 num += (int)(num2 * (float)num);
             }
             else if (npcBigLevel >= 4)
             {
-                float num2 = .18f;
+                float num2 = .14f;
                 num += (int)(num2 * (float)num);
             }
             __instance.npcSetField.AddNpcExp(npcId, (int)((float)num * times));
@@ -468,16 +469,20 @@ namespace zjr_mcs
             if (npcData.HasField("JinDanData"))
             {
                 int tmp_jindanlv = npcData["JinDanData"]["JinDanLv"].I;
-                float num2 = (npcBigLevel >= 4 ? .18f : 0) + .18f + (tmp_jindanlv - 9) * .09f;
+                float num2 = npcbiguanxiulianPatch.myget_jindan_xishu(npcBigLevel, tmp_jindanlv);
                 num += (int)(num2 * (float)num);
             }
             else if (npcBigLevel >= 4)
             {
-                float num2 = .18f;
+                float num2 = .14f;
                 num += (int)(num2 * (float)num);
             }
             NpcJieSuanManager.inst.npcSetField.AddNpcExp(npcId, num);
             return false;
+        }
+        public static float myget_jindan_xishu(int npcBigLevel, int tmp_jindanlv)
+        {
+            return (npcBigLevel >= 4 ? .11f : .09f) * tmp_jindanlv - .63f;
         }
     }
 
