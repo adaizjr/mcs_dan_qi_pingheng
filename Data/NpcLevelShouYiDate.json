@@ -1,14 +1,26 @@
-{	
+{
+	"4":{
+		"id":4,
+		"jieshapanduan":8000
+	},
+	"5":{
+		"id":5,
+		"jieshapanduan":8000
+	},
+	"6":{
+		"id":6,
+		"jieshapanduan":8000
+	},
 	"7":{
 		"id":7,
-		"jieshapanduan":31000
+		"jieshapanduan":32000
 	},
 	"8":{
 		"id":8,
-		"jieshapanduan":31000
+		"jieshapanduan":32000
 	},
 	"9":{
 		"id":9,
-		"jieshapanduan":31000
+		"jieshapanduan":32000
 	}
 }

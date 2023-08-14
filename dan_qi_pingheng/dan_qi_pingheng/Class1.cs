@@ -20,7 +20,24 @@ namespace zjr_mcs
             // 使用Debug.Log()方法来将文本输出到控制台
             Debug.Log("Hello,mcs_pingheng!");
             Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
+            //Harmony.CreateAndPatchAll(typeof(pinghengBepInExMod));
         }
+
+        //[HarmonyPrefix]
+        //[HarmonyPatch(typeof(Tab.WuDaoSlot), "Study")]
+        //public static bool WuDaoSlot_Study_Prefix(Tab.WuDaoSlot __instance)
+        //{
+        //    if (__instance.State == 2)
+        //    {
+        //        KBEngine.Avatar player = Tools.instance.getPlayer();
+        //        JSONObject jsonobject = jsonData.instance.WuDaoJson[__instance.Id.ToString()];
+        //        bool tmp_flag = jsonobject["Lv"].I <= (player.level + 5) / 3;
+        //        if (!tmp_flag)
+        //            UIPopTip.Inst.Pop("境界过低，需要" + ToolsEx.ToBigLevelName(jsonobject["Lv"].I - 1), PopTipIconType.叹号);
+        //        return tmp_flag;
+        //    }
+        //    return true;
+        //}
     }
 
     [HarmonyPatch(typeof(GUIPackage.item), "gongneng")]
@@ -416,10 +433,6 @@ namespace zjr_mcs
             }
             if (npcBigLevel >= 5)
                 num = 1296 * 5;
-            //if (npcBigLevel <= 1 && npcData["MenPai"].I == 5)
-            //{
-            //    num = 360 * 3;
-            //}
             return num;
         }
         public static float get_zizhi_xishu(int zizhi)
