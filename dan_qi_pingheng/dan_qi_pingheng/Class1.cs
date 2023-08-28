@@ -20,7 +20,7 @@ namespace zjr_mcs
             // 使用Debug.Log()方法来将文本输出到控制台
             Debug.Log("Hello,mcs_pingheng!");
             Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
-            //Harmony.CreateAndPatchAll(typeof(pinghengBepInExMod));
+            Harmony.CreateAndPatchAll(typeof(pinghengBepInExMod));
         }
 
         //[HarmonyPrefix]
@@ -38,6 +38,29 @@ namespace zjr_mcs
         //    }
         //    return true;
         //}
+
+        [HarmonyPrefix]
+        [HarmonyPatch(typeof(GUIPackage.Skill), "realizeSeid39")]
+        public static bool Skill_realizeSeid39_Prefix(GUIPackage.Skill __instance, int seid, List<int> damage, KBEngine.Avatar attaker, KBEngine.Avatar receiver, int type)
+        {
+            int listSum = RoundManager.instance.getListSum(attaker.crystal);
+            RoundManager.instance.removeCard(attaker, listSum);
+
+            int tmp_id = __instance.getSeidJson(seid)["skillid"].I;
+            if (tmp_id <= 5060 && tmp_id >= 5056)
+            {
+                //attaker.recvDamage(attaker, attaker, __instance.skill_ID, -listSum * __instance.getSeidJson(seid)["value1"].I, type);
+                for (int j = 0; j < listSum; j++)
+                {
+                    attaker.spell.addDBuff(15);
+                }
+                damage[0] = damage[0] + listSum * (__instance.getSeidJson(seid)["value1"].I + listSum);
+            }
+            else
+                damage[0] = damage[0] + listSum * __instance.getSeidJson(seid)["value1"].I;
+
+            return false;
+        }
     }
 
     [HarmonyPatch(typeof(GUIPackage.item), "gongneng")]
