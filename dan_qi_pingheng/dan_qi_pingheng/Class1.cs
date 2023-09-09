@@ -121,16 +121,16 @@ namespace zjr_mcs
                         __result = Mathf.RoundToInt(tmp_baseprice * .5f * newjiaCheng);
                     }
                 }
-                else if (jsonData.instance.AvatarJsonData[npcid.ToString()]["gudingjiage"].I != 1)
-                {
-                    if (num == 100)
-                    {
-                        float num3 = (float)jsonData.instance.getSellPercent(npcid, __instance.itemID) / 100f;
-                        float jiaCheng = __result / (tmp_baseprice) / num3;
-                        float newjiaCheng = jiaCheng - .95f;
-                        __result = Mathf.RoundToInt(tmp_baseprice * newjiaCheng * num3);
-                    }
-                }
+                //else if (jsonData.instance.AvatarJsonData[npcid.ToString()]["gudingjiage"].I != 1)
+                //{
+                //    if (num == 100)
+                //    {
+                //        float num3 = (float)jsonData.instance.getSellPercent(npcid, __instance.itemID) / 100f;
+                //        float jiaCheng = __result / (tmp_baseprice) / num3;
+                //        float newjiaCheng = jiaCheng - .95f;
+                //        __result = Mathf.RoundToInt(tmp_baseprice * newjiaCheng * num3);
+                //    }
+                //}
             }
         }
     }
@@ -162,16 +162,16 @@ namespace zjr_mcs
                         __result = Mathf.RoundToInt(tmp_baseprice * .5f * newjiaCheng);
                     }
                 }
-                else if (jsonData.instance.AvatarJsonData[npcid.ToString()]["gudingjiage"].I != 1)
-                {
-                    if (num == 100)
-                    {
-                        float num3 = (float)jsonData.instance.getSellPercent(npcid, __instance.Id) / 100f;
-                        float jiaCheng = __result / (tmp_baseprice) / num3;
-                        float newjiaCheng = jiaCheng - .95f;
-                        __result = Mathf.RoundToInt(tmp_baseprice * newjiaCheng * num3);
-                    }
-                }
+                //else if (jsonData.instance.AvatarJsonData[npcid.ToString()]["gudingjiage"].I != 1)
+                //{
+                //    if (num == 100)
+                //    {
+                //        float num3 = (float)jsonData.instance.getSellPercent(npcid, __instance.Id) / 100f;
+                //        float jiaCheng = __result / (tmp_baseprice) / num3;
+                //        float newjiaCheng = jiaCheng - .95f;
+                //        __result = Mathf.RoundToInt(tmp_baseprice * newjiaCheng * num3);
+                //    }
+                //}
             }
         }
         static float get_naijiu_xishu(Bag.BaseItem __instance)
