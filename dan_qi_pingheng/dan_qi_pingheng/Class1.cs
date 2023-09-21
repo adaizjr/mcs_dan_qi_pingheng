@@ -135,6 +135,76 @@ namespace zjr_mcs
         }
     }
 
+    [HarmonyPatch(typeof(GUIPackage.item), "CalcNPCZhuangTai")]
+    class GUIItemCalcNPCZhuangTaiPatch
+    {
+        public static void Postfix(GUIPackage.item __instance, ref int npcid, ref bool isJiXu, ref bool isLaJi)
+        {
+            new_zhuangtai(__instance.itemID, ref npcid, ref isJiXu, ref isLaJi);
+        }
+        public static void new_zhuangtai(int itemid, ref int npcid, ref bool isJiXu, ref bool isLaJi)
+        {
+            isJiXu = false;
+            isLaJi = false;
+            _ItemJsonData itemJsonData = _ItemJsonData.DataDict[itemid];
+            List<int> list = new List<int>();
+            if (itemJsonData.ItemFlag.Count > 0)
+            {
+                foreach (int item in itemJsonData.ItemFlag)
+                {
+                    list.Add(item);
+                }
+            }
+            if (list.Contains(50))
+            {
+                isLaJi = true;
+            }
+            JSONObject jsonobject = npcid.NPCJson();
+            if (!jsonobject.HasField("Status"))
+            {
+                return;
+            }
+            int i = jsonobject["Status"]["StatusId"].I;
+            int i2 = (jsonobject["Level"].I + 2) / 3;
+            if (list.Contains(620))
+            {
+                int danYaoCanUseNum = NpcJieSuanManager.inst.npcUseItem.GetDanYaoCanUseNum(npcid, itemid);
+                if (danYaoCanUseNum > 0)
+                {
+                    isJiXu = true;
+                }
+            }
+            if (i2 == 1 && list.Contains(610))
+            {
+                isJiXu = true;
+            }
+            if (i2 == 2 && list.Contains(611))
+            {
+                isJiXu = true;
+            }
+            if (i2 == 3 && list.Contains(612))
+            {
+                isJiXu = true;
+            }
+            if (i2 == 4 && list.Contains(613))
+            {
+                isJiXu = true;
+            }
+            if (i2 == 5 && list.Contains(614))
+            {
+                isJiXu = true;
+            }
+        }
+    }
+    [HarmonyPatch(typeof(Bag.BaseItem), "CalcNPCZhuangTai")]
+    class BaseItemCalcNPCZhuangTaiPatch
+    {
+        public static void Postfix(Bag.BaseItem __instance, ref int npcid, ref bool isJiXu, ref bool isLaJi)
+        {
+            GUIItemCalcNPCZhuangTaiPatch.new_zhuangtai(__instance.Id, ref npcid, ref isJiXu, ref isLaJi);
+        }
+    }
+
     [HarmonyPatch(typeof(Bag.BaseItem), "GetJiaoYiPrice", new Type[] { typeof(int), typeof(bool), typeof(bool) })]
     class BaseItemJiaoyiPatch
     {
