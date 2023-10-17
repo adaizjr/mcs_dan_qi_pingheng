@@ -50,10 +50,10 @@ namespace zjr_mcs
             if (tmp_id <= 5060 && tmp_id >= 5056)
             {
                 //attaker.recvDamage(attaker, attaker, __instance.skill_ID, -listSum * __instance.getSeidJson(seid)["value1"].I, type);
-                for (int j = 0; j < listSum; j++)
-                {
-                    attaker.spell.addDBuff(15);
-                }
+                //for (int j = 0; j < listSum; j++)
+                //{
+                //    attaker.spell.addDBuff(15);
+                //}
                 damage[0] = damage[0] + listSum * (__instance.getSeidJson(seid)["value1"].I + listSum);
             }
             else
@@ -166,7 +166,7 @@ namespace zjr_mcs
             }
             int i = jsonobject["Status"]["StatusId"].I;
             int i2 = (jsonobject["Level"].I + 2) / 3;
-            if (list.Contains(620))
+            if (list.Contains(620) || list.Contains(621))
             {
                 int danYaoCanUseNum = NpcJieSuanManager.inst.npcUseItem.GetDanYaoCanUseNum(npcid, itemid);
                 if (danYaoCanUseNum > 0)
