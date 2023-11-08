@@ -513,17 +513,13 @@ namespace zjr_mcs
                     num = 1080 * 4;
                     break;
             }
-            if (npcData["isImportant"].b)
-            {
-                if (npcBigLevel == 4 && npcData.HasField("HuaShengTime"))
-                {
-                    num = 1296 * 4;
-                }
-                if (npcBigLevel == 3 && npcData.HasField("YuanYingTime"))
-                {
-                    num = 1080 * 3;
-                }
-            }
+            //if (npcData["isImportant"].b)
+            //{
+            //    if (npcBigLevel == 3 && npcData.HasField("YuanYingTime"))
+            //    {
+            //        num = 1080 * 3;
+            //    }
+            //}
             if (npcBigLevel >= 5)
                 num = 1296 * 5;
             return num;
@@ -763,6 +759,72 @@ namespace zjr_mcs
             KBEngine.Avatar player = Tools.instance.getPlayer();
             int wuDaoLevelByType = player.wuDaoMag.getWuDaoLevelByType(22);
             __result = __result * (1 + .1f * wuDaoLevelByType);
+        }
+    }
+
+    [HarmonyPatch(typeof(KillSystem.RewardOrder_RandomNpcFactory), "GetNpcId")]
+    class rornf_Patch
+    {
+        public static bool Prefix(KillSystem.RewardOrder_RandomNpcFactory __instance, ref int __result, ref int id)
+        {
+            __result = my_GetNpcId(__instance, id);
+            return false;
+        }
+        static int my_GetNpcId(KillSystem.RewardOrder_RandomNpcFactory __instance, int id)
+        {
+            List<int> liuPai = KillRandomNpcData.DataDict[id].LiuPai;
+            List<int> level = KillRandomNpcData.DataDict[id].Level;
+            List<int> xingGe = KillRandomNpcData.DataDict[id].XingGe;
+            int num = liuPai[UnityEngine.Random.Range(0, liuPai.Count)];
+            int num2 = level[level.Count - 1];
+            int num3 = xingGe[UnityEngine.Random.Range(0, xingGe.Count)];
+            int num4 = 0;
+            int num5 = 0;
+            foreach (JSONObject jsonobject in jsonData.instance.AvatarJsonData.list)
+            {
+                if (jsonobject["id"].I >= 20000
+                    && (!jsonobject.HasField("isImportant") || !jsonobject["isImportant"].b)
+                    && !KillSystem.KillManager.Inst.RewardOrderModels.ContainsKey(jsonobject["id"].I)
+                    && level.Contains(jsonobject["Level"].I)
+                    && liuPai.Contains(jsonobject["LiuPai"].I)
+                    && xingGe.Contains(jsonobject["XingGe"].I))
+                {
+                    if (jsonobject["Level"].I == num2)
+                        return jsonobject["id"].I;
+                    if (jsonobject["Level"].I > num4)
+                    {
+                        num4 = jsonobject["Level"].I;
+                        num5 = jsonobject["id"].I;
+                    }
+                }
+            }
+            if (num5 > 0)
+                return num5;
+            return FactoryManager.inst.npcFactory.CreateNpc(num, num2, num3);
+        }
+    }
+
+    [HarmonyPatch(typeof(EndlessSeaMag), "SetCanSeeMonstar")]
+    class EndlessSeaMag_SetCanSeeMonstar_Patch
+    {
+        public static void Postfix(EndlessSeaMag __instance)
+        {
+            //foreach (SeaAvatarObjBase seaAvatarObjBase in __instance.MonstarList)
+            //{
+            //    seaAvatarObjBase.ShowMonstarObj();
+            //}
+            foreach (var tmp in AllMapManage.instance.mapIndex)
+            {
+                MapSeaCompent mapSeaCompent = tmp.Value as MapSeaCompent;
+                //if (mapSeaCompent.NodeHasIsLand())
+                //{
+                //    EndlessSeaMag.AddSeeIsland(tmp.Key);
+                //}
+                if (mapSeaCompent.WhetherHasJiZhi)
+                {
+                    EndlessSeaMag.AddSeeIsland(tmp.Key);
+                }
+            }
         }
     }
 }
