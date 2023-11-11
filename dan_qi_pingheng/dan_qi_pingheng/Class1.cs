@@ -337,13 +337,13 @@ namespace zjr_mcs
             }
             else
             {
-                int num = 37;
+                int num = 1;
                 foreach (SkillItem skillItem in __instance.hasJieDanSkillList)
                 {
                     if (__instance.level >= 10)
-                        num += (int)jsonData.instance.JieDanBiao[skillItem.itemId.ToString()]["EXP"].n * 11 / 2;
+                        num += (int)jsonData.instance.JieDanBiao[skillItem.itemId.ToString()]["EXP"].n * 15 / 2;
                     else
-                        num += (int)jsonData.instance.JieDanBiao[skillItem.itemId.ToString()]["EXP"].n * 9 / 2;
+                        num += (int)jsonData.instance.JieDanBiao[skillItem.itemId.ToString()]["EXP"].n * 13 / 2;
                 }
                 return num * .01f;
             }
@@ -488,12 +488,35 @@ namespace zjr_mcs
                 float num2 = npcbiguanxiulianPatch.myget_jindan_xishu(npcBigLevel, tmp_jindanlv);
                 num += (int)(num2 * (float)num);
             }
-            else if (npcBigLevel >= 4)
+            else if (npcBigLevel >= 3)
             {
-                float num2 = .14f;
+                float num2 = npcbiguanxiulianPatch.myget_jindan_xishu(npcBigLevel, 7);
                 num += (int)(num2 * (float)num);
             }
-            __instance.npcSetField.AddNpcExp(npcId, (int)((float)num * times));
+            if (times == 1f)
+                __instance.npcSetField.AddNpcExp(npcId, (int)((float)num * times));
+            else
+            {
+                int dongfu = 100;
+                switch (npcBigLevel)
+                {
+                    case 3:
+                        dongfu = 150;
+                        break;
+                    case 4:
+                        dongfu = 200;
+                        break;
+                    case 5:
+                        dongfu = 210;
+                        break;
+                }
+                if (PlayerEx.IsDaoLv(npcId))
+                {
+                    dongfu = 210;
+                }
+                num = (int)(num * (2 + tmp_zizhi * 3 + dongfu * 1.2f / 100) / (1 + tmp_zizhi) / 2.6f);
+                __instance.npcSetField.AddNpcExp(npcId, (int)((float)num * times));
+            }
             return false;
         }
         public static int get_xiulian_sudu(int npcId)
@@ -574,9 +597,9 @@ namespace zjr_mcs
                 float num2 = npcbiguanxiulianPatch.myget_jindan_xishu(npcBigLevel, tmp_jindanlv);
                 num += (int)(num2 * (float)num);
             }
-            else if (npcBigLevel >= 4)
+            else if (npcBigLevel >= 3)
             {
-                float num2 = .14f;
+                float num2 = npcbiguanxiulianPatch.myget_jindan_xishu(npcBigLevel, 7);
                 num += (int)(num2 * (float)num);
             }
             NpcJieSuanManager.inst.npcSetField.AddNpcExp(npcId, num);
@@ -584,7 +607,7 @@ namespace zjr_mcs
         }
         public static float myget_jindan_xishu(int npcBigLevel, int tmp_jindanlv)
         {
-            return (npcBigLevel >= 4 ? .11f : .09f) * tmp_jindanlv - .63f;
+            return (npcBigLevel >= 4 ? .15f : .13f) * tmp_jindanlv - .99f;
         }
     }
 
@@ -778,8 +801,8 @@ namespace zjr_mcs
             int num = liuPai[UnityEngine.Random.Range(0, liuPai.Count)];
             int num2 = level[level.Count - 1];
             int num3 = xingGe[UnityEngine.Random.Range(0, xingGe.Count)];
-            int num4 = 0;
-            int num5 = 0;
+            //int num4 = 0;
+            //int num5 = 0;
             foreach (JSONObject jsonobject in jsonData.instance.AvatarJsonData.list)
             {
                 if (jsonobject["id"].I >= 20000
@@ -791,15 +814,15 @@ namespace zjr_mcs
                 {
                     if (jsonobject["Level"].I == num2)
                         return jsonobject["id"].I;
-                    if (jsonobject["Level"].I > num4)
-                    {
-                        num4 = jsonobject["Level"].I;
-                        num5 = jsonobject["id"].I;
-                    }
+                    //if (jsonobject["Level"].I > num4)
+                    //{
+                    //    num4 = jsonobject["Level"].I;
+                    //    num5 = jsonobject["id"].I;
+                    //}
                 }
             }
-            if (num5 > 0)
-                return num5;
+            //if (num5 > 0)
+            //    return num5;
             return FactoryManager.inst.npcFactory.CreateNpc(num, num2, num3);
         }
     }
