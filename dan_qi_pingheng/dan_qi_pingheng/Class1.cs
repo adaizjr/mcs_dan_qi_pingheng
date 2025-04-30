@@ -86,8 +86,23 @@ namespace zjr_mcs
                             int tmp_dandu = (__instance.quality - level - 1) * 30;
                             avatar.AddDandu(tmp_dandu);
 
-                            UIPopTip.Inst.Pop("超阶吃药，毒性大增" + tmp_dandu.ToString(), PopTipIconType.感悟);
+                            UIPopTip.Inst.Pop("超阶吃药，毒性大增" + tmp_dandu.ToString(), PopTipIconType.叹号);
                         }
+                    }
+                }
+                if (__instance.itemID == 6307)
+                {
+                    if (Tools.getJsonobject(Tools.instance.getPlayer().NaiYaoXin, string.Concat(__instance.itemID)) >= 19)
+                    {
+                        string msg = "血菩提19/19，无法服用";
+                        UIPopTip.Inst.Pop(msg, PopTipIconType.叹号);
+                        return false;
+                    }
+                    else
+                    {
+                        __instance.AddNaiYaoXin();
+                        string msg = "血菩提" + Tools.getJsonobject(Tools.instance.getPlayer().NaiYaoXin, string.Concat(__instance.itemID)).ToString() + "/19";
+                        UIPopTip.Inst.Pop(msg, PopTipIconType.叹号);
                     }
                 }
             }
@@ -182,11 +197,23 @@ namespace zjr_mcs
             {
                 isJiXu = true;
             }
+            if (i2 == 2 && itemid >= 3901 && itemid <= 3906)
+            {
+                isJiXu = true;
+            }
             if (i2 == 3 && list.Contains(612))
             {
                 isJiXu = true;
             }
+            if (i2 == 3 && itemid >= 3912 && itemid <= 3915)
+            {
+                isJiXu = true;
+            }
             if (i2 == 4 && list.Contains(613))
+            {
+                isJiXu = true;
+            }
+            if (i2 == 4 && itemid >= 3920 && itemid <= 3924)
             {
                 isJiXu = true;
             }
@@ -275,7 +302,7 @@ namespace zjr_mcs
             level = (level + 5) / 3;
             if (level + 1 < dragSlot.Item.GetImgQuality())
             {
-                UIPopTip.Inst.Pop("超阶物品，无法使用", PopTipIconType.感悟);
+                UIPopTip.Inst.Pop("超阶物品，无法使用", PopTipIconType.叹号);
             }
             return level + 1 >= dragSlot.Item.GetImgQuality();
         }
@@ -291,7 +318,7 @@ namespace zjr_mcs
             level = (level + 5) / 3;
             if (level + 1 < dragSlot.Item.GetImgQuality())
             {
-                UIPopTip.Inst.Pop("超阶物品，无法使用", PopTipIconType.感悟);
+                UIPopTip.Inst.Pop("超阶物品，无法使用", PopTipIconType.叹号);
             }
             return level + 1 >= dragSlot.Item.GetImgQuality();
         }
@@ -306,7 +333,7 @@ namespace zjr_mcs
             level = (level + 5) / 3;
             if (level + 1 < dragSlot.Item.GetImgQuality())
             {
-                UIPopTip.Inst.Pop("超阶物品，无法使用", PopTipIconType.感悟);
+                UIPopTip.Inst.Pop("超阶物品，无法使用", PopTipIconType.叹号);
             }
             return level + 1 >= dragSlot.Item.GetImgQuality();
         }
@@ -362,7 +389,7 @@ namespace zjr_mcs
             level = (level + 5) / 3;
             if (level + 1 < equipItem.GetImgQuality())
             {
-                UIPopTip.Inst.Pop("超阶物品，无法使用", PopTipIconType.感悟);
+                UIPopTip.Inst.Pop("超阶物品，无法使用", PopTipIconType.叹号);
             }
             return level + 1 >= equipItem.GetImgQuality();
         }
