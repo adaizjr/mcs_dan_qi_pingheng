@@ -17,11 +17,21 @@ namespace zjr_mcs
     {// 在插件启动时会直接调用Awake()方法
         void Awake()
         {
-            // 使用Debug.Log()方法来将文本输出到控制台
+            //instance = this;
             Debug.Log("Hello,mcs_pingheng!");
+            noDanyao = base.Config.Bind<bool>("nandu", "不吃药", false, "不吃药，默认关闭");
+            Debug.Log("nodanyao:" + noDanyao.Value.ToString());
+            falidai = base.Config.Bind<bool>("nandu", "法力贷", false, "法力贷，默认关闭");
+            Debug.Log("falidai:" + falidai.Value.ToString());
+
             Harmony.CreateAndPatchAll(Assembly.GetExecutingAssembly());
+            Debug.Log("GetExecutingAssembly");
             Harmony.CreateAndPatchAll(typeof(pinghengBepInExMod));
+            Debug.Log("pinghengBepInExMod");
         }
+        //public static pinghengBepInExMod instance;
+        public static BepInEx.Configuration.ConfigEntry<bool> noDanyao;
+        public static BepInEx.Configuration.ConfigEntry<bool> falidai;
 
         //[HarmonyPrefix]
         //[HarmonyPatch(typeof(Tab.WuDaoSlot), "Study")]
@@ -71,6 +81,17 @@ namespace zjr_mcs
             if (_ItemJsonData.DataDict.ContainsKey(__instance.itemID))
             {
                 int type = _ItemJsonData.DataDict[__instance.itemID].type;
+                if (pinghengBepInExMod.noDanyao.Value)
+                {
+                    if (type == 5 && __instance.itemID != 5317)
+                    {
+                        string msg = "禁止吃药";
+                        UIPopTip.Inst.Pop(msg, PopTipIconType.叹号);
+                        return false;
+                    }
+                    return true;
+                }
+
                 if (type == 5 && !jsonData.instance.ItemJsonData[string.Concat(__instance.itemID)]["seid"].ToList().Contains(31)
                     && !jsonData.instance.ItemJsonData[string.Concat(__instance.itemID)]["seid"].ToList().Contains(16))
                 {
@@ -92,16 +113,16 @@ namespace zjr_mcs
                 }
                 if (__instance.itemID == 6307)
                 {
-                    if (Tools.getJsonobject(Tools.instance.getPlayer().NaiYaoXin, string.Concat(__instance.itemID)) >= 19)
+                    if (Tools.getJsonobject(Tools.instance.getPlayer().NaiYaoXin, string.Concat(__instance.itemID)) >= 20)
                     {
-                        string msg = "血菩提19/19，无法服用";
+                        string msg = "血菩提20/20，无法服用";
                         UIPopTip.Inst.Pop(msg, PopTipIconType.叹号);
                         return false;
                     }
                     else
                     {
                         __instance.AddNaiYaoXin();
-                        string msg = "血菩提" + Tools.getJsonobject(Tools.instance.getPlayer().NaiYaoXin, string.Concat(__instance.itemID)).ToString() + "/19";
+                        string msg = "血菩提" + Tools.getJsonobject(Tools.instance.getPlayer().NaiYaoXin, string.Concat(__instance.itemID)).ToString() + "/20";
                         UIPopTip.Inst.Pop(msg, PopTipIconType.叹号);
                     }
                 }
@@ -129,7 +150,7 @@ namespace zjr_mcs
                 }
                 if (isPlayer)
                 {
-                    if (num < 100 && num >= 0)
+                    if (num < 100 && num >= 0 && tmp_baseprice > 0)
                     {
                         float jiaCheng = Mathf.RoundToInt(__result / (tmp_baseprice * .5f) * 100) / 100f;
                         float newjiaCheng = Mathf.Min(jiaCheng * 2, jiaCheng - num * .01f + 1);
@@ -221,6 +242,10 @@ namespace zjr_mcs
             {
                 isJiXu = true;
             }
+            //if (itemid == 5231)
+            //{
+            //    isJiXu = false;
+            //}
         }
     }
     [HarmonyPatch(typeof(Bag.BaseItem), "CalcNPCZhuangTai")]
@@ -252,7 +277,7 @@ namespace zjr_mcs
 
                 if (isPlayer)
                 {
-                    if (num < 100 && num >= 0)
+                    if (num < 100 && num >= 0 && tmp_baseprice > 0)
                     {
                         float jiaCheng = Mathf.RoundToInt(__result / (tmp_baseprice * .5f) * 100) / 100f;
                         float newjiaCheng = Mathf.Min(jiaCheng * 2, jiaCheng - num * .01f + 1);
@@ -414,10 +439,11 @@ namespace zjr_mcs
                     flag = !NPCEx.IsDeath(npcid);
                 }
                 int jiazhi = ShuangXiuJingYuanJiaZhi.DataDict[shuangXiuMiShu.ningliantype].jiazhi;
-                int i2 = (int)(Math.Min(UIBiGuanXiuLianPanel.GetBiguanSpeed(), ShuangXiuLianHuaSuDu.DataDict[i].speed) * biGuanTime / jiazhi);
+                float tmp_sudu = pinghengBepInExMod.noDanyao.Value ? ShuangXiuLianHuaSuDu.DataDict[i].speed : Math.Min(UIBiGuanXiuLianPanel.GetBiguanSpeed(), ShuangXiuLianHuaSuDu.DataDict[i].speed);
+                int i2 = (int)(tmp_sudu * biGuanTime / jiazhi);
                 if (jiazhi > 1)
                 {
-                    int tmp_shengyu = (int)(Math.Min(UIBiGuanXiuLianPanel.GetBiguanSpeed(), ShuangXiuLianHuaSuDu.DataDict[i].speed) * biGuanTime - jiazhi * i2);
+                    int tmp_shengyu = (int)(tmp_sudu * biGuanTime - jiazhi * i2);
                     if (tmp_shengyu > 0)
                     {
                         int num = jsonobject["Count"].I;
@@ -476,7 +502,7 @@ namespace zjr_mcs
     {
         public static bool Prefix(NpcJieSuanManager __instance, ref List<int> __result, ref int index)
         {
-            Debug.Log("hello jesha");
+            Debug.LogWarning("hello jesha");
             List<int> list = new List<int>();
             if (__instance.npcMap.bigMapNPCDictionary.ContainsKey(index) && __instance.npcMap.bigMapNPCDictionary[index].Count > 0)
             {
@@ -875,6 +901,126 @@ namespace zjr_mcs
                     EndlessSeaMag.AddSeeIsland(tmp.Key);
                 }
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(Avatar), "addEXP")]
+    class falidai_Patch
+    {
+        static bool canexp = true;
+        public static bool Prefix(Avatar __instance, ref int num)
+        {
+            if (pinghengBepInExMod.falidai.Value)
+            {
+                canexp = true;
+                int biglevel = (__instance.level + 2) / 3;
+                if (biglevel >= 5)
+                {
+                    return true;
+                }
+                if (num <= 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    if ((int)(__instance.money) >= num * (5 - biglevel))
+                    {
+                        return true;
+                    }
+                }
+                __instance.money += (ulong)num;
+                UIPopTip.Inst.Pop("没钱，借了" + num.ToString() + "法力贷", PopTipIconType.叹号);
+                canexp = false;
+                return false;
+            }
+            return true;
+        }
+        public static void Postfix(Avatar __instance, ref int num)
+        {
+            if (pinghengBepInExMod.falidai.Value)
+            {
+                int biglevel = (__instance.level + 2) / 3;
+                if (num > 0 && __instance.level < 13 && canexp)
+                {
+                    if ((int)(__instance.money) >= num * (5 - biglevel))
+                    {
+                        __instance.money -= (ulong)(num * (5 - biglevel));
+                    }
+                }
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(UIBiGuanXiuLianPanel), "GetBiguanSpeed", new Type[] { typeof(bool), typeof(int), typeof(string) })]
+    class ubgxlp_Patch
+    {
+        public static bool Prefix(UIBiGuanXiuLianPanel __instance, ref float __result, ref bool log, ref int biGuanType, ref string sceneName)
+        {
+            __result = my_GetBiguanSpeed(log, biGuanType, sceneName);
+            return false;
+        }
+        static float my_GetBiguanSpeed(bool log = false, int biGuanType = 1, string sceneName = "")
+        {
+            KBEngine.Avatar player = PlayerEx.Player;
+            int staticID = player.getStaticID();
+            if (staticID != 0)
+            {
+                float num = jsonData.instance.XinJinGuanLianJsonData[player.getXinJinGuanlianType().ToString()]["speed"].n / 100f;
+                string text = SceneEx.NowSceneName;
+                if (!string.IsNullOrWhiteSpace(sceneName))
+                {
+                    text = sceneName;
+                }
+                float num2;
+                if (text == "S101")
+                {
+                    DongFuData dongFuData = new DongFuData(DongFuManager.NowDongFuID);
+                    dongFuData.Load();
+                    float xiuliansudu = (float)DFLingYanLevel.DataDict[dongFuData.LingYanLevel].xiuliansudu;
+                    int xiuliansudu2 = DFZhenYanLevel.DataDict[dongFuData.JuLingZhenLevel].xiuliansudu;
+                    num2 = xiuliansudu + (float)xiuliansudu2;
+                    num2 /= 100f;
+                }
+                else
+                {
+                    num2 = jsonData.instance.BiguanJsonData[biGuanType.ToString()]["speed"].n / 100f;
+                }
+                float n = jsonData.instance.StaticSkillJsonData[staticID.ToString()]["Skill_Speed"].n;
+                float num3 = player.AddZiZhiSpeed(n);
+                float jieDanSkillAddExp = player.getJieDanSkillAddExp();
+                float num4 = (n * num2 * num + num3 * (num2 * num < 1 ? num2 * num : 1)) * jieDanSkillAddExp;
+                float num5 = 0f;
+                if (player.TianFuID.HasField(string.Concat(12)))
+                {
+                    num5 = player.TianFuID["12"].n / 100f;
+                    num4 += num4 * num5;
+                }
+                if (log)
+                {
+                    Debug.Log(string.Format("闭关修炼速度:心境速度{0} 地脉速度(使用的场景{1}){2} 功法速度{3} 资质速度{4} 金丹加成{5} 天赋加成{6}", new object[]
+                    {
+                    num,
+                    text,
+                    num2,
+                    n,
+                    num3,
+                    jieDanSkillAddExp,
+                    num5
+                    }) + string.Format("\n闭关速度结算:((({0}*{1}*{2})+{3})*{4})*(1+{5})={6}", new object[]
+                    {
+                    n,
+                    num2,
+                    num,
+                    num3,
+                    jieDanSkillAddExp,
+                    num5,
+                    num4
+                    }));
+                }
+                return num4;
+            }
+            return 0f;
         }
     }
 }
