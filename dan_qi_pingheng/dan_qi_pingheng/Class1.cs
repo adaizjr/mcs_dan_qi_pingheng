@@ -28,6 +28,8 @@ namespace zjr_mcs
             Debug.Log("GetExecutingAssembly");
             Harmony.CreateAndPatchAll(typeof(pinghengBepInExMod));
             Debug.Log("pinghengBepInExMod");
+            Debug.Log("danqipingheng,xiantiandaoti!");
+            Harmony.CreateAndPatchAll(typeof(xiantiandaoti));
         }
         //public static pinghengBepInExMod instance;
         public static BepInEx.Configuration.ConfigEntry<bool> noDanyao;
@@ -59,11 +61,6 @@ namespace zjr_mcs
             int tmp_id = __instance.getSeidJson(seid)["skillid"].I;
             if (tmp_id <= 5060 && tmp_id >= 5056)
             {
-                //attaker.recvDamage(attaker, attaker, __instance.skill_ID, -listSum * __instance.getSeidJson(seid)["value1"].I, type);
-                //for (int j = 0; j < listSum; j++)
-                //{
-                //    attaker.spell.addDBuff(15);
-                //}
                 damage[0] = damage[0] + listSum * (__instance.getSeidJson(seid)["value1"].I + listSum);
             }
             else
@@ -83,13 +80,23 @@ namespace zjr_mcs
                 int type = _ItemJsonData.DataDict[__instance.itemID].type;
                 if (pinghengBepInExMod.noDanyao.Value)
                 {
-                    if (type == 5 && __instance.itemID != 5317)
+                    if (type == 5 && __instance.itemID != 5317 && __instance.itemID != 5522)
                     {
                         string msg = "禁止吃药";
                         UIPopTip.Inst.Pop(msg, PopTipIconType.叹号);
                         return false;
                     }
                     return true;
+                }
+                if (type == 12)
+                {
+                    int id = (int)jsonData.instance.ItemsSeidJsonData[32][string.Concat(__instance.itemID)]["value1"].n;
+                    if (PlayerEx.HasShuangXiuSkill(id))
+                    {
+                        string msg = "已经学会";
+                        UIPopTip.Inst.Pop(msg, PopTipIconType.叹号);
+                        return false;
+                    }
                 }
 
                 if (type == 5 && !jsonData.instance.ItemJsonData[string.Concat(__instance.itemID)]["seid"].ToList().Contains(31)
@@ -113,16 +120,16 @@ namespace zjr_mcs
                 }
                 if (__instance.itemID == 6307)
                 {
-                    if (Tools.getJsonobject(Tools.instance.getPlayer().NaiYaoXin, string.Concat(__instance.itemID)) >= 20)
+                    if (Tools.getJsonobject(Tools.instance.getPlayer().NaiYaoXin, string.Concat(__instance.itemID)) >= 50)
                     {
-                        string msg = "血菩提20/20，无法服用";
+                        string msg = "血菩提50/50，无法服用";
                         UIPopTip.Inst.Pop(msg, PopTipIconType.叹号);
                         return false;
                     }
                     else
                     {
                         __instance.AddNaiYaoXin();
-                        string msg = "血菩提" + Tools.getJsonobject(Tools.instance.getPlayer().NaiYaoXin, string.Concat(__instance.itemID)).ToString() + "/20";
+                        string msg = "血菩提" + Tools.getJsonobject(Tools.instance.getPlayer().NaiYaoXin, string.Concat(__instance.itemID)).ToString() + "/50";
                         UIPopTip.Inst.Pop(msg, PopTipIconType.叹号);
                     }
                 }
